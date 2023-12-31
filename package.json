@@ -1,0 +1,22 @@
+{
+  "name": "kards",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "@vueuse/core": "^10.3.0",
+    "bcryptjs": "^2.4.3",
+    "jwt-decode": "^3.1.2",
+    "pinia": "^2.1.6",
+    "vue": "^3.3.4",
+    "vue-router": "^4.2.4"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^4.2.3",
+    "vite": "^4.3.9"
+  },
+  "author": "Sunaa Risu",
+  "license": "ISC"
+}
