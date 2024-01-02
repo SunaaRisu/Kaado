@@ -1,8 +1,8 @@
 <script setup>
     import { ref } from 'vue';
-    import StackPreview from '../components/stackPreview.vue';
+    import DeckPreview from '../components/deckPreview.vue';
 
-    const stacks = ref([]);
+    const decks = ref([]);
     
     const request = {
         method: 'GET',
@@ -10,7 +10,7 @@
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json'}
     }
 
-    fetch('http://localhost:3000/stack/get_stack_list', request)
+    fetch('http://localhost:3000/deck/get_deck_list', request)
         .then(response => {
             switch (response.status) {
                 case 200:
@@ -27,7 +27,7 @@
             };
         })
         .then(data => {
-            stacks.value = data;
+            decks.value = data;
         })
         .catch(err => {
             console.log(err)
@@ -38,7 +38,7 @@
 
 <template>
     <main>
-        <StackPreview v-for="stack in stacks.stacks" :stackInfo="stack"/>
+        <DeckPreview v-for="deck in decks.decks" :deckInfo="deck"/>
     </main>
 </template>
 

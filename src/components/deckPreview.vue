@@ -5,24 +5,24 @@
     const router = useRouter();
 
     const props = defineProps({
-        stackInfo: Object
+        deckInfo: Object
     });
 
-    function openStack(){
-        router.push({ path: '/stack/' + props.stackInfo._id})
+    function openDeck(){
+        router.push({ path: '/deck/' + props.deckInfo._id})
     }
 
 </script>
 
 <template>
-    <div class="stackPreviewContainer" @click="openStack()">
-        <span>{{ stackInfo.title }}</span>
-        <span>Cards: {{ stackInfo.card_count }}</span>
+    <div class="deckPreviewContainer" @click="openDeck()">
+        <span>{{ deckInfo.title }}</span>
+        <span>Cards: {{ deckInfo.card_count }}</span>
     </div>
 </template>
 
 <style scoped>
-    .stackPreviewContainer{
+    .deckPreviewContainer{
         display: flex;
         flex-direction: column;
         align-items: center;

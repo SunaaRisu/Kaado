@@ -5,7 +5,7 @@
     const route = useRoute();
     const router = useRouter();
 
-    const stack = ref();
+    const deck = ref();
 
     const request = {
         method: 'POST',
@@ -14,7 +14,7 @@
         body: JSON.stringify({ _id: route.params.id })
     }
 
-    await fetch('http://localhost:3000/stack/get_one', request)
+    await fetch('http://localhost:3000/deck/get_one', request)
         .then(response => {
             switch(response.status) {
                 case 200:
@@ -22,7 +22,7 @@
                     break;
 
                 case 404:
-                    alert('stack not found');
+                    alert('deck not found');
                     break;
                 
                 case 500:
@@ -36,7 +36,7 @@
         })
         .then(data => {
             if(data) {
-                stack.value = data;
+                deck.value = data;
             }                    
         })
         .catch(err => {
@@ -72,9 +72,9 @@
     const cardsData = ref();
     const cards = ref([]);
 
-    cardsData.value = stack.value.stack.cards;
+    cardsData.value = deck.value.deck.cards;
 
-    for (let index = 0; index < stack.value.stack.chartDefinition.chart_columns; index++) {
+    for (let index = 0; index < deck.value.deck.chartDefinition.chart_columns; index++) {
 
         cardsData.value.forEach(element => {
             cards.value.push({
@@ -121,7 +121,7 @@
 
 <template>
     <main>
-        <span id="title">{{ stack.stack.title }}</span>
+        <span id="title">{{ deck.deck.title }}</span>
 
         <div id="card">
             <span>{{ cards[currentCard].q }}</span>
