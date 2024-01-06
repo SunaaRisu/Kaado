@@ -1,8 +1,8 @@
 <script setup>
     import { ref } from 'vue';
-    import { useRoute, useRouter } from 'vue-router'
-    import JSConfetti from 'js-confetti'
-    import { shuffle, arrayWithoutElementAtIndex } from '../../lib/array'
+    import { useRoute, useRouter } from 'vue-router';
+    import JSConfetti from 'js-confetti';
+    import { shuffle, arrayWithoutElementAtIndex } from '../../lib/array';
 
     const route = useRoute();
     const router = useRouter();
@@ -171,6 +171,7 @@
             <div class="smallBtn" id="MoveToBackBtn" @click="moveCardBack()"><strong>MOVE BACK</strong></div>
             <div class="smallBtn" id="nextBtn" @click="showAnswerOrNextCard()"><strong>NEXT</strong></div>
         </div>
+        
         <div class="btn" id="showAnswerBtn" v-if="!cardAnswered && !finished" @click="showAnswerOrNextCard()"><strong>SHOW ANSWER</strong></div>
 
         <div id="progressBar" v-if="!finished"> 
