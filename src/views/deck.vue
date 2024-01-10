@@ -163,7 +163,7 @@
             <span id="menuSubtitle">{{ deck.deck.title }}</span>
             <button class="menuBtn" id="repeatDeck" @click="createStackAndStart()"><strong>REPEAT DECK</strong></button>
             <button class="menuBtn" id="repeatFailedCards" @click="repeatFailedCards()" :disabled="!haveFailedCards"><strong>REPEAT THE {{ failedCards.length }} FAILED CARDS</strong></button>
-            <button class="menuBtn" id="backToSelection" @click="router.push({ path: '/'})"><strong>BACH TO DECK SELECTION</strong></button>
+            <button class="menuBtn" id="backToSelection" @click="router.push({ path: '/'})"><strong>BACK TO DECK SELECTION</strong></button>
         </div>
 
         <div id="btnContainer" v-if="cardAnswered && !finished">
@@ -196,7 +196,7 @@
     #title {
         position: absolute;
         top: 10px;
-        color: aliceblue;
+        color: var(--color-text-light);
     }
 
     span {
@@ -204,7 +204,7 @@
     }
 
     #showAnswerBtn {
-        background-color: aqua;
+        background-color: var(--rb-c-robin_egg_blue);
         height: 60px;
         width: 440px;
 
@@ -234,7 +234,7 @@
         width: 30%;
         height: 100%;
 
-        background-color: aqua;
+        background-color: var(--rb-c-robin_egg_blue);
         border-radius: 5px;
         display: flex;
         justify-content: center;
@@ -242,7 +242,7 @@
     }
 
     .card {
-        background-color: aqua;
+        background-color: var(--rb-c-robin_egg_blue);
         height: 500px;
         width: 400px;
         padding: 20px;
@@ -278,7 +278,7 @@
     }
 
     .menuBtn {
-        background-color: rgb(0, 211, 211);
+        background-color: var(--rb-c-verdigris);
         border: none;
 
         width: 80%;
@@ -296,7 +296,7 @@
     }
 
     #progressBar {
-        background-color: #464d49;
+        background-color: var(--color-background-accent);
         height: 20px;
         width: 440px;
         border-radius: 5px;
@@ -306,7 +306,7 @@
     }
 
     #progressBarFill {
-        background-color: aqua;
+        background-color: var(--rb-c-robin_egg_blue);
         height: 100%;
         border-radius: 5px;
     }

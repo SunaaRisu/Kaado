@@ -30,7 +30,7 @@
         margin: 20px;
         padding: 20px;
         border-radius: 20px;
-        background-color: aqua;
+        background-color: var(--rb-c-robin_egg_blue);
 
         height: fit-content;
         width: 200px;
