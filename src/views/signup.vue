@@ -1,5 +1,135 @@
 <script setup>
+    import bcrypt from 'bcryptjs/dist/bcrypt';
+    import { onUpdated, ref } from 'vue';
+    import { version } from '../../package.json';
 
+    const username = ref('');  
+    const usernameErr = ref('');  
+    const email = ref('');
+    const emailErr = ref('');
+    const password = ref('');
+
+    const passwordErrLenght = ref(false);
+    const passwordErrUpperCase = ref(false);
+    const passwordErrLowerCase = ref(false);
+    const passwordErrSpecial = ref(false);
+    const passwordErrNumbers = ref(false);
+
+    const conPassword = ref('');
+    const conPasswordErr = ref('');
+
+    const signupBtnDisabled = ref(false);
+
+
+    onUpdated(() => {
+        if (username.value.includes('@')) {
+            usernameErr.value = 'Username is not allowed to contain "@"';
+        }else{
+            if (usernameErr.value === 'Username is not allowed to contain "@"') {
+                usernameErr.value = '';
+            }
+        }
+
+        if (email.value != '' && !email.value.includes('@')){
+            emailErr.value = 'Pleas enter a valid email address'
+        }else{
+            emailErr.value = '';
+        }
+
+        if (password.value.length <= 15) {
+
+            passwordErrLenght.value = true;           
+        }else {
+            passwordErrLenght.value = false;           
+        }
+
+        if (!/\d/.test(password.value)){
+
+            passwordErrNumbers.value = true;              
+        }else {
+            passwordErrNumbers.value = false;              
+        }
+
+        if (!/[a-z]/.test(password.value)) {
+
+            passwordErrLowerCase.value = true;
+        }else {
+            passwordErrLowerCase.value = false;
+        }
+
+        if (!/[A-Z]/.test(password.value)) {
+
+            passwordErrUpperCase.value = true;
+        }else {
+            passwordErrUpperCase.value = false;
+        }
+
+        if (!/[!-\/:-@[-`{-~]/.test(password.value)) {
+
+            passwordErrSpecial.value = true;
+        }else {
+            passwordErrSpecial.value = false;
+        }
+
+        if (password.value != '' && conPassword.value != '' && password.value != conPassword.value){
+            conPasswordErr.value = 'Passwords do not match';
+        }else{
+            conPasswordErr.value = '';
+        }
+    })
+
+    function signupSubmit(){
+        signupBtnDisabled.value = true;
+
+        if (username.value !== '' && !username.value.includes('@') && email.value !== '' && password.value !== '' && conPassword.value !== '' && emailErr.value === '' && passwordErrLenght.value === false && passwordErrUpperCase.value === false && passwordErrLowerCase.value === false && passwordErrSpecial.value === false && passwordErrNumbers.value === false && conPasswordErr.value === '') {
+            bcrypt.hash(password.value, 15, (err, hash) => {
+                if (err) {
+                    console.log(err);
+                    signupBtnDisabled.value = false;
+                    return;
+                }
+
+                const request = {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json'},
+                    body: JSON.stringify({ 
+                        username: username.value,
+                        email: email.value,
+                        password: hash,
+                        version: version
+                        })
+                };
+
+                fetch('http://localhost:3000/user/signup', request)
+                    .then(response => {
+                        switch (response.status) {
+                            case 201:
+                                alert('signed up');
+                                break;
+
+                            case 400:
+                                usernameErr.value = 'Username already exists';
+                                break;
+
+                            case 500:
+                                signupErr.value = 'Something went wrong. Please try again later.';
+                                break;
+                        
+                            default:
+                                break;
+                        }
+                        signupBtnDisabled.value = false;
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        signupBtnDisabled.value = false;
+                    });
+            });
+        }
+
+        
+    }
 </script>
 
 <template>
@@ -7,17 +137,17 @@
         <div class="sign_up_container">
             <form @submit.prevent="$event => signupSubmit()">
                 <div class="sign_up_form_control">
-                    <input type="text" name="username" required placeholder="Username" v-model="username">
+                    <input type="text" name="username" required placeholder="Username" autocomplete="username" v-model="username">
                     
-                    <p></p>
+                    <p>{{ usernameErr }}</p>
                 </div>
                 <div class="sign_up_form_control">
-                    <input type="email" name="email" required placeholder="Email" v-model="email">
+                    <input type="email" name="email" required placeholder="Email" autocomplete="email" v-model="email">
                     
                     <p>{{emailErr}}</p>
                 </div>
                 <div class="sign_up_form_control">
-                    <input type="password" name="password" required placeholder="Password" v-model="password">
+                    <input type="password" name="password" required placeholder="Password" autocomplete="new-password" v-model="password">
                     
                     <div class="spanContainer">
                         <span v-show="passwordErrLenght">15 characters, </span>  
@@ -29,7 +159,7 @@
                     
                 </div>
                 <div class="sign_up_form_control">
-                    <input type="password" name="conPassword" required placeholder="Confirm Password" v-model="conPassword">
+                    <input type="password" name="conPassword" required placeholder="Confirm Password" autocomplete="current-password" v-model="conPassword">
                     
                     <p>{{ conPasswordErr }}</p>
                 </div>
@@ -52,7 +182,7 @@
     }
 
     .sign_up_container {
-        background-color: var(--color-background-lighter);
+        background-color: var(--color-background-accent);
         padding: 20px 40px;
         border-radius: 10px;
     }
@@ -69,7 +199,7 @@
         cursor: pointer;
         display: inline;
         width: 100%;
-        background: var(--rs-c-cream);
+        background: var(--rb-c-robin_egg_blue);
         padding: 15px;
         font-family: inherit;
         font-size: 16px;
@@ -79,13 +209,7 @@
     }
 
     .sign_up_btn:hover{
-        background: var(--color-primary-darker);
-    }
-
-    .sign_up_btn:focus {
-        outline: 5px solid var(--color-primary-darker);
-        background: var(--rs-c-cream);
-        transform: scale(5px);
+        background: var(--rb-c-verdigris);
     }
 
     .sign_up_form_control {
@@ -95,11 +219,11 @@
 
     .sign_up_form_control a{
         font-size: 12px;
-        color: var(--rs-c-cream);
+        color: var(--color-text-light);
     }
 
     .sign_up_form_control a:hover{
-        color: var(--blue_hover);
+        color: var(--rb-c-white);
     }
 
     .sign_up_form_control p{
@@ -107,7 +231,7 @@
         height: 12px;
         margin-top: 6px;
         margin-bottom: 12px;
-        color: var(--error);
+        color: var(--rb-c-red);
     }
 
     .sign_up_form_control .p_info{
@@ -115,7 +239,7 @@
         height: 20px;
         margin-top: 6px;
         margin-bottom: 0px;
-        color: var(--white);
+        color: var(--rb-c-white);
     }
 
     .sign_up_form_control .p_error{
@@ -123,13 +247,13 @@
         height: 20px;
         margin-top: 6px;
         margin-bottom: 18px;
-        color: var(--error);
+        color: var(--rb-c-red);
     }
 
     .spanContainer{
         height: 12px;
         margin-top: 6px;
-        margin-bottom: 12px;
+        margin-bottom: 24px;
     }
 
     .spanContainer span{
@@ -140,19 +264,24 @@
     .sign_up_form_control input {
         background-color: transparent;
         border: 0;
-        border-bottom: 2px var(--rs-c-cream) solid;
+        border-bottom: 2px var(--rb-c-robin_egg_blue) solid;
         display: block;
         width: 100%;
         padding: 15px 0;
         font-size: 18px;
-        color: var(--rs-c-cream);
+        color: var(--color-text-light);
         
+    }
+
+    ::placeholder {
+        color: var(--color-text-light);
+        opacity: 0.8;
     }
 
     .sign_up_form_control input:focus,
     .sign_up_form_control input:valid {
         outline: 0;
-        border-bottom-color: var(--blue);
+        border-bottom-color: var(--rb-c-verdigris);
     }
 
     .sign_up_form_control label {
@@ -175,6 +304,7 @@
         display: inline-block;
         transform: translateY(0px);
         transition: transform 100ms ease-in-out;
+        color: var(--color-text-light);
     }
 
     span.fade{
@@ -188,7 +318,7 @@
     }
 
     a{
-        color: var(--white);
+        color: var(--color-text-light);
         text-decoration: none;
         margin-top: 15px;
     }    

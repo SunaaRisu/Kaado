@@ -4,12 +4,16 @@
 </script>
 
 <template>
-    <Suspense>
-        <RouterView/>
-    </Suspense>    
+    <main>
+        <Suspense>
+            <RouterView/>
+        </Suspense>   
+    </main>     
 </template>
 
 
 <style scoped>
-    
+    main {
+        height: 100vh;
+    }
 </style>
