@@ -199,7 +199,7 @@
         cursor: pointer;
         display: inline;
         width: 100%;
-        background: var(--rb-c-robin_egg_blue);
+        background: var(--rk-c-robin_egg_blue);
         padding: 15px;
         font-family: inherit;
         font-size: 16px;
@@ -209,7 +209,7 @@
     }
 
     .sign_up_btn:hover{
-        background: var(--rb-c-verdigris);
+        background: var(--rk-c-verdigris);
     }
 
     .sign_up_form_control {
@@ -223,7 +223,7 @@
     }
 
     .sign_up_form_control a:hover{
-        color: var(--rb-c-white);
+        color: var(--rk-c-white);
     }
 
     .sign_up_form_control p{
@@ -231,7 +231,7 @@
         height: 12px;
         margin-top: 6px;
         margin-bottom: 12px;
-        color: var(--rb-c-red);
+        color: var(--rk-c-red);
     }
 
     .sign_up_form_control .p_info{
@@ -239,7 +239,7 @@
         height: 20px;
         margin-top: 6px;
         margin-bottom: 0px;
-        color: var(--rb-c-white);
+        color: var(--rk-c-white);
     }
 
     .sign_up_form_control .p_error{
@@ -247,7 +247,7 @@
         height: 20px;
         margin-top: 6px;
         margin-bottom: 18px;
-        color: var(--rb-c-red);
+        color: var(--rk-c-red);
     }
 
     .spanContainer{
@@ -264,7 +264,7 @@
     .sign_up_form_control input {
         background-color: transparent;
         border: 0;
-        border-bottom: 2px var(--rb-c-robin_egg_blue) solid;
+        border-bottom: 2px var(--rk-c-robin_egg_blue) solid;
         display: block;
         width: 100%;
         padding: 15px 0;
@@ -281,7 +281,7 @@
     .sign_up_form_control input:focus,
     .sign_up_form_control input:valid {
         outline: 0;
-        border-bottom-color: var(--rb-c-verdigris);
+        border-bottom-color: var(--rk-c-verdigris);
     }
 
     .sign_up_form_control label {

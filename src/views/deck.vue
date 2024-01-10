@@ -204,7 +204,7 @@
     }
 
     #showAnswerBtn {
-        background-color: var(--rb-c-robin_egg_blue);
+        background-color: var(--rk-c-robin_egg_blue);
         height: 60px;
         width: 440px;
 
@@ -234,7 +234,7 @@
         width: 30%;
         height: 100%;
 
-        background-color: var(--rb-c-robin_egg_blue);
+        background-color: var(--rk-c-robin_egg_blue);
         border-radius: 5px;
         display: flex;
         justify-content: center;
@@ -242,7 +242,7 @@
     }
 
     .card {
-        background-color: var(--rb-c-robin_egg_blue);
+        background-color: var(--rk-c-robin_egg_blue);
         height: 500px;
         width: 400px;
         padding: 20px;
@@ -278,7 +278,7 @@
     }
 
     .menuBtn {
-        background-color: var(--rb-c-verdigris);
+        background-color: var(--rk-c-verdigris);
         border: none;
 
         width: 80%;
@@ -306,7 +306,7 @@
     }
 
     #progressBarFill {
-        background-color: var(--rb-c-robin_egg_blue);
+        background-color: var(--rk-c-robin_egg_blue);
         height: 100%;
         border-radius: 5px;
     }
