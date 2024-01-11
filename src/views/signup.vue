@@ -2,6 +2,14 @@
     import bcrypt from 'bcryptjs/dist/bcrypt';
     import { onUpdated, ref } from 'vue';
     import { version } from '../../package.json';
+    import { useUserStore } from '../store/user';
+    import { useRouter } from 'vue-router';
+    import jwt_decode from "jwt-decode";
+
+    const router = useRouter();
+    const user = useUserStore();
+
+    console.log(user.$state.user.username);
 
     const username = ref('');  
     const usernameErr = ref('');  
@@ -105,7 +113,7 @@
                     .then(response => {
                         switch (response.status) {
                             case 201:
-                                alert('signed up');
+                                return response.json();
                                 break;
 
                             case 400:
@@ -120,6 +128,16 @@
                                 break;
                         }
                         signupBtnDisabled.value = false;
+                    })
+                    .then(data => {
+                        if (data) {
+                            user.setJWT(data.token);
+                            const jwtData = jwt_decode(data.token);
+                            user.setUser(jwtData._id, jwtData.username);
+
+                            console.log(user.$state.user.username);
+                            router.go(-1);
+                        }
                     })
                     .catch(err => {
                         console.error(err);
