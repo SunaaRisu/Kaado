@@ -6,26 +6,29 @@
     const user = useUserStore();
 
     const decks = ref([]);
+
+    const infoTxt = ref('');
     
     const request = {
         method: 'GET',
         credentials: 'include',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json'}
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'Authorization': 'Bearer ' + await user.get_jwt() }
     }
 
     fetch('http://localhost:3000/deck/get_deck_list', request)
         .then(response => {
             switch (response.status) {
                 case 200:
+                    infoTxt.value = '';
                     return response.json(); 
                     break;
                 
                 case 500:
-                    alert('something went wrong');
+                    infoTxt.value = 'Something went wrong. :( Try refreshing the page.';
                     break;
             
                 default:
-                    alert('something went wrong');
+                    infoTxt.value = 'Something went wrong. :( Try refreshing the page.';
                     break;
             };
         })
@@ -34,7 +37,7 @@
         })
         .catch(err => {
             console.log(err)
-            alert('something went wrong')
+            infoTxt.value = 'Something went wrong. :( Try refreshing the page.';
         });
 
 </script>
@@ -43,6 +46,7 @@
     <main>
         <DeckPreview v-for="deck in decks.decks" :deckInfo="deck"/>
     </main>
+    <h1>{{ infoTxt }}</h1>
 </template>
 
 <style scoped>
@@ -56,5 +60,11 @@
         width: 70vw;
         height: 95vh;
         padding: 30px;
+    }
+
+    h1 {
+        position: absolute;
+        top: 50vh;
+        color: var(--color-text-light);
     }
 </style>

@@ -29,7 +29,7 @@
         const request = {
             method: 'POST',
             credentials: 'include',
-            headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
+            headers: {'Content-Type': 'application/json', 'Accept': 'application/json', 'Authorization': 'Bearer ' + await user.get_jwt() },
             body: JSON.stringify({ _id: route.params.id })
         }
 

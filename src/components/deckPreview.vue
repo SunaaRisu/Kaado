@@ -1,5 +1,4 @@
 <script setup>
-
     import { useRouter } from 'vue-router';
 
     const router = useRouter();
@@ -9,7 +8,7 @@
     });
 
     function openDeck(){
-        router.push({ path: '/deck/' + props.deckInfo._id})
+        router.push({ path: '/deck/' + props.deckInfo._id}); // redirect to /deck/(deck id)
     }
 
 </script>

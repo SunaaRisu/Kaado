@@ -4,7 +4,7 @@
 
     const emit = defineEmits(['response']);
 
-    const renderNewFeatures = ref(true);
+    const renderNewFeatures = ref(true); 
     const renderFixedIssues = ref(false);
     const renderKnownIssues = ref(true);
 </script>
@@ -44,9 +44,9 @@
         height: fit-content;
         max-height: 80vh;
         min-height: 10vh;
-        background-color: aqua;
+        background-color: var(--rk-c-robin_egg_blue);
         border-radius: 20px;
-        border: 3px solid #383D3B;
+        border: 3px solid var(--color-background);
 
         position: absolute;
         top: 10vh;
@@ -69,7 +69,7 @@
         margin-top: 30px;
         font-weight: 700;
         font-size: xx-large;
-        border-bottom: 2px solid black;
+        border-bottom: 2px solid var(--rk-c-black);
     }
 
     #version {
@@ -87,7 +87,7 @@
     .seperatorTitle {
         position: relative;
         top: -12px;
-        background-color: aqua;
+        background-color: var(--rk-c-robin_egg_blue);
         padding-left: 10px;
         padding-right: 10px;
         margin-left: 20px;        

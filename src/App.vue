@@ -53,7 +53,7 @@
         const request = {
             method: 'PATCH',
             credentials: 'include',
-            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'Authorization': 'Bearer ' + await user.get_jwt()},
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'Authorization': 'Bearer ' + await user.get_jwt() },
             body: JSON.stringify({ 
                 updates: [
                     { field: 'flags.version', value: version }
