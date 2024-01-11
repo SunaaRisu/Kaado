@@ -1,34 +1,36 @@
 :root {
-    --rb-c-white: #EEE5E9;
-    --rb-c-french_gray: #D2CBCE;
-    --rb-c-silver: #A7A4A5;
+    --rk-c-white: #EEE5E9;
+    --rk-c-french_gray: #D2CBCE;
+    --rk-c-silver: #A7A4A5;
 
-    --rb-c-outer_space: #494D4C;
-    --rb-c-onyx: #383D3B;
-    --rb-c-black: #151515;
+    --rk-c-outer_space: #494D4C;
+    --rk-c-onyx: #383D3B;
+    --rk-c-black: #151515;
 
-    --rb-c-non_photo_blue: #92DCE5;
-    --rb-c-robin_egg_blue: #52DEE5;
+    --rk-c-non_photo_blue: #92DCE5;
+    --rk-c-robin_egg_blue: #52DEE5;
+    --rk-c-verdigris: #16BAC2;
+    --rk-c-alice_blue: aliceblue;
 
-    --rb-c-red: #bf1212;
-    --rb-c-green: #03d100; 
+    --rk-c-red: #bf1212;
+    --rk-c-green: #03d100; 
 }
 
 :root {
-    --color-background: var(--rb-c-anyx);
-    --color-background-accent: var(--rb-c-french_gray);
-    --color-background-accent-2: var(--rb-c-gray-light);
+    --color-background: var(--rk-c-onyx);
+    --color-background-accent: var(--rk-c-outer_space);
 
-    --color-text: var(--rb-c-black);
+    --color-text: var(--rk-c-black);
+    --color-text-light: var(--rk-c-alice_blue);
 }
 
 /* @media (prefers-color-scheme: dark) {
     :root {
-      --color-background: var(--rb-c-black);
-      --color-background-accent: var(--rb-c-gray-darker);
-      --color-background-accent-2: var(--rb-c-gray-dark);
+      --color-background: var(--rk-c-black);
+      --color-background-accent: var(--rk-c-gray-darker);
+      --color-background-accent-2: var(--rk-c-gray-dark);
   
-      --color-text: var(--rb-c-white);
+      --color-text: var(--rk-c-white);
     }
 } */
 
@@ -36,8 +38,8 @@ body {
     min-height: 90vh;
     width: 100vw;
     color: var(--color-text);
-    background: #383D3B;
-    transition: color 0.5s, background-color 0.5s;
+    background: var(--color-background);
+    /* transition: color 0.5s, background-color 0.5s; FLASHBANG >:( */ 
     line-height: 1.6;
     font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu,
       Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
