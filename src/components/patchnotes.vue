@@ -1,5 +1,6 @@
 <script setup>
     import { ref } from 'vue';
+    import { version } from '../../package.json';
 
     const emit = defineEmits(['response']);
 
@@ -14,7 +15,7 @@
             <img src="../assets/icons/letterx_83737.svg" alt="Close patch notes">
         </div>
         <span id="title">Patch Notes</span>
-        <span id="version">Version: 0.0.4</span>
+        <span id="version">Version: {{ version }}</span>
         <div class="seperator" id="newSeperator" v-if="renderNewFeatures"><span class="seperatorTitle">New Features</span></div>
         <div class="textContainer" id="newText" v-if="renderNewFeatures">
             <ul>
