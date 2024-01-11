@@ -1,6 +1,9 @@
 <script setup>
     import { ref } from 'vue';
     import DeckPreview from '../components/deckPreview.vue';
+    import { useUserStore } from '../store/user';
+
+    const user = useUserStore();
 
     const decks = ref([]);
     

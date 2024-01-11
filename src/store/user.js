@@ -8,6 +8,8 @@ export const useUserStore = defineStore('user', {
             user: {
                 _id: '',
                 username: '',
+                email: '',
+                version: ''
             },
             jwt: ''
         }
@@ -16,9 +18,11 @@ export const useUserStore = defineStore('user', {
         setJWT(x) {
             this.jwt = x
         },
-        setUser(id, username) {
-            this.user.id = id;
+        setUser(id, username, email, version) {
+            this.user._id = id;
             this.user.username = username;
+            this.user.email = email;
+            this.user.version = version;
         },
         async get_jwt() {
             if (this.jwt !== '' && (jwt_decode(this.jwt).exp - 60) * 1000 > Date.now()) {
@@ -40,8 +44,10 @@ export const useUserStore = defineStore('user', {
                 const data = await response.json();
                 this.jwt = data.token;
                 const jwtData = jwt_decode(data.token);
-                this.user.id = jwtData._id;
+                this.user._id = jwtData._id;
                 this.user.username = jwtData.username;
+                this.user.email = jwtData.email;
+                this.user.version = jwtData.version;
                 return data.token                
             }
         }

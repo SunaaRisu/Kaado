@@ -60,7 +60,7 @@
                     if (data) {
                         user.setJWT(data.token);
                         const jwtData = jwt_decode(data.token);
-                        user.setUser(jwtData._id, jwtData.username);
+                        user.setUser(jwtData._id, jwtData.username, jwtData.email, jwtData.version);
 
                         router.go(-1);
                     }

@@ -9,8 +9,6 @@
     const router = useRouter();
     const user = useUserStore();
 
-    console.log(user.$state.user.username);
-
     const username = ref('');  
     const usernameErr = ref('');  
     const email = ref('');
@@ -133,9 +131,8 @@
                         if (data) {
                             user.setJWT(data.token);
                             const jwtData = jwt_decode(data.token);
-                            user.setUser(jwtData._id, jwtData.username);
+                            user.setUser(jwtData._id, jwtData.username, jwtData.email, jwtData.version);
 
-                            console.log(user.$state.user.username);
                             router.go(-1);
                         }
                     })
