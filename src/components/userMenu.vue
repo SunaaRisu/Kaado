@@ -1,7 +1,9 @@
 <script setup>
     import { useUserStore } from '../store/user';
+    import { useRouter } from 'vue-router';
 
     const user = useUserStore();
+    const router = useRouter();
 
     function signOutOnClick() {
         const request = {
@@ -15,6 +17,7 @@
                 switch (response.status) {
                     case 200:
                         user.removeUser();
+                        router.go(0);
                         break;
                 
                     default:

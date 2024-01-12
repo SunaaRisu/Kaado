@@ -5,7 +5,7 @@
     const emit = defineEmits(['response']);
 
     const renderNewFeatures = ref(true); 
-    const renderFixedIssues = ref(false);
+    const renderFixedIssues = ref(true);
     const renderKnownIssues = ref(true);
 </script>
 
@@ -19,20 +19,19 @@
         <div class="seperator" id="newSeperator" v-if="renderNewFeatures"><span class="seperatorTitle">New Features</span></div>
         <div class="textContainer" id="newText" v-if="renderNewFeatures">
             <ul>
-                <li>A new patch notes windown was added.</li>
-                <li>Confetti after completing a deck.  :3</li>
+                <li>User accounts were added. And this Windows does not show again without any changes.</li>
             </ul>            
         </div>
         <div class="seperator" id="fixedSeperator" v-if="renderFixedIssues"><span class="seperatorTitle" >Fixed Issues</span></div>
         <div class="textContainer" id="fixedText" v-if="renderFixedIssues">
             <ul>
-                
+                <li>The issue with the patch note windows is fixed.</li>
             </ul>
         </div>
         <div class="seperator" id="knownSeperator" v-if="renderKnownIssues"><span class="seperatorTitle">Known Issues</span></div>
         <div class="textContainer" id="knownText" v-if="renderKnownIssues">
             <ul>
-                <li>Patch note window appears on every refresh. This will be fixed in the update that includes accouts at least.</li>
+                <li>Redirect after login and signup does not work everytime.</li>
             </ul>
         </div>
     </div>
