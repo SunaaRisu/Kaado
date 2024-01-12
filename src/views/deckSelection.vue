@@ -12,6 +12,7 @@
 
     const infoTxt = ref('');
     const btnTxt = ref('Login');
+    const renderUserMenu = ref(false);
     
     const request = {
         method: 'GET',
@@ -48,12 +49,20 @@
         btnTxt.value = user.$state.user.username;
     }
 
+    function accountBtnOnClick() {
+        if (user.$state.jwt === '') {
+            router.push({ path: '/login' });
+        } else {
+            renderUserMenu.value = !renderUserMenu.value;
+        }
+    }
+
 </script>
 
 <template>
     <main>
-        <div id="accountBtn" @click="router.push({ path: '/login' })"><span>{{ btnTxt }}</span></div>
-        <userMenu></userMenu>
+        <div id="accountBtn" @click="accountBtnOnClick()"><span>{{ btnTxt }}</span></div>
+        <userMenu v-if="renderUserMenu"/>
         <div id="deckPreviewContainer">
             <DeckPreview v-for="deck in decks.decks" :deckInfo="deck"/>
         </div>  
