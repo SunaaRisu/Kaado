@@ -1,6 +1,7 @@
 <script setup>
     import { ref } from 'vue';
     import DeckPreview from '../components/deckPreview.vue';
+    import userMenu from '../components/userMenu.vue';
     import { useUserStore } from '../store/user';
     import { useRouter } from 'vue-router';
 
@@ -52,10 +53,12 @@
 <template>
     <main>
         <div id="accountBtn" @click="router.push({ path: '/login' })"><span>{{ btnTxt }}</span></div>
+        <userMenu></userMenu>
         <div id="deckPreviewContainer">
             <DeckPreview v-for="deck in decks.decks" :deckInfo="deck"/>
         </div>  
-        <h1>{{ infoTxt }}</h1>      
+        <h1>{{ infoTxt }}</h1>
+        <a href="https://sunaarisu.de/privacy">Privacy</a>      
     </main>    
 </template>
 
@@ -100,6 +103,14 @@
     h1 {
         position: absolute;
         top: 50vh;
+        color: var(--color-text-light);
+    }
+    
+    a {
+        position: fixed;
+        left: 10px;
+        bottom: 10px;
+        text-decoration: none;
         color: var(--color-text-light);
     }
 </style>

@@ -3,10 +3,11 @@
     import { useRoute, useRouter } from 'vue-router';
     import JSConfetti from 'js-confetti';
     import { shuffle, arrayWithoutElementAtIndex } from '../../lib/array';
+    import { useUserStore } from '../store/user';
 
     const route = useRoute();
     const router = useRouter();
-
+    const user = useUserStore();
     
     // setup confetti
     const confetti = new JSConfetti();
