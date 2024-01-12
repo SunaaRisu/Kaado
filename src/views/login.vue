@@ -77,11 +77,11 @@
         <div class="sign_up_container">
             <form @submit.prevent="$event => loginSubmit()">
                 <div class="sign_up_form_control">
-                    <input type="text" name="identifier" placeholder="Username or Email" v-model="identifier">                    
+                    <input type="text" name="identifier" placeholder="Username or Email" autocomplete="username || email" v-model="identifier">                    
                     <p class="p_error">{{ identifierErr }}</p>
                 </div>
                 <div class="sign_up_form_control">
-                    <input type="password" name="password" placeholder="Password" v-model="password">
+                    <input type="password" name="password" placeholder="Password" autocomplete="current-password" v-model="password">
                     <p class="p_error">{{ passwordErr }}</p>
                     <a href="https://sunaarisu.de/wip.php">Forgot Password</a>
                 </div>

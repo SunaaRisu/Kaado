@@ -24,6 +24,13 @@ export const useUserStore = defineStore('user', {
             this.user.email = email;
             this.user.version = version;
         },
+        removeUser() {
+            this.jwt = '';
+            this.user._id = '';
+            this.user.username = '';
+            this.user.email = '';
+            this.user.version = '';
+        },
         async get_jwt() {
             if (this.jwt !== '' && (jwt_decode(this.jwt).exp - 60) * 1000 > Date.now()) {
                 return this.jwt;
