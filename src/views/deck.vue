@@ -151,7 +151,7 @@
     <main>
         <span id="title" v-if="!finished">{{ deck.deck.title }}</span>
 
-        <div class="card" id="card" v-if="!finished">
+        <div class="card" id="card" v-if="!finished" @click="showAnswerOrNextCard()">
             <span>{{ stack[currentCard].q }}</span>
             <div id="answer" v-if="cardAnswered">
                 <span>{{ stack[currentCard].a[0] }}</span>
@@ -168,9 +168,11 @@
         </div>
 
         <div id="btnContainer" v-if="cardAnswered && !finished">
-            <div class="smallBtn" id="againBtn" @click="askCardAgain()"><strong>AGAIN</strong></div>
-            <div class="smallBtn" id="MoveToBackBtn" @click="moveCardBack()"><strong>MOVE BACK</strong></div>
+            <div class="sidepanel" id="moveToBackPanel" @click="moveCardBack()"></div>
+            <div class="smallBtn" id="moveToBackBtn" @click="moveCardBack()"><strong>MOVE BACK</strong></div>
             <div class="smallBtn" id="nextBtn" @click="showAnswerOrNextCard()"><strong>NEXT</strong></div>
+            <div class="smallBtn" id="againBtn" @click="askCardAgain()"><strong>AGAIN</strong></div>
+            <div class="sidepanel" id="againPanel" @click="askCardAgain()"></div>
         </div>
         
         <div class="btn" id="showAnswerBtn" v-if="!cardAnswered && !finished" @click="showAnswerOrNextCard()"><strong>SHOW ANSWER</strong></div>
@@ -229,6 +231,23 @@
 
         position: absolute;
         bottom: 70px;
+    }
+
+    .sidepanel{
+        height: 100vh;
+        width: calc(calc(100vw/2) - 220px);
+    }
+
+    #moveToBackPanel{
+        position: fixed;
+        top: 0;
+        left: 0;
+    }
+    
+    #againPanel {
+        position: fixed;
+        top: 0;
+        right: 0;
     }
 
     .smallBtn {
