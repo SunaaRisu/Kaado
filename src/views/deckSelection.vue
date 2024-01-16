@@ -1,9 +1,11 @@
 <script setup>
     import { ref } from 'vue';
-    import DeckPreview from '../components/deckPreview.vue';
-    import userMenu from '../components/userMenu.vue';
     import { useUserStore } from '../store/user';
     import { useRouter } from 'vue-router';
+    import { onClickOutside } from '@vueuse/core'
+    import DeckPreview from '../components/deckPreview.vue';
+    import stackCreationSettings from '../components/stackCreationSettings.vue';
+    import userMenu from '../components/userMenu.vue';
 
     const router = useRouter();
     const user = useUserStore();
@@ -13,6 +15,10 @@
     const infoTxt = ref('');
     const btnTxt = ref('Login');
     const renderUserMenu = ref(false);
+    const renderStackSettings = ref(true);
+    const stackSettingsRef = ref(null);
+
+    onClickOutside(stackSettingsRef, () => {renderStackSettings.value = false});
     
     const request = {
         method: 'GET',
@@ -63,6 +69,7 @@
     <main>
         <div id="accountBtn" @click="accountBtnOnClick()"><span>{{ btnTxt }}</span></div>
         <userMenu v-if="renderUserMenu"/>
+        <stackCreationSettings v-if="renderStackSettings" ref="stackSettingsRef" />
         <div id="deckPreviewContainer">
             <DeckPreview v-for="deck in decks.decks" :deckInfo="deck"/>
         </div>  
