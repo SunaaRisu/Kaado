@@ -18,10 +18,11 @@
 
         </div>
         <div class="seperator"></div>
-        <input type="checkbox" name="saveToDB" id="" checked="true">
+        <input type="checkbox" name="saveToDB" id="checkbox" checked="false">
+        <label for="checkbox">Only save this settings for this session.</label>
         <div id="btnContainer">
-            <div id="saveBtn">Save</div>
-            <div id="saveForStack">Use once</div>
+            <div class="btn" id="saveBtn"><span>Save</span></div>
+            <div class="btn" id="saveForStack"><span>Use once</span></div>
         </div>
     </div>
 </template>
@@ -51,5 +52,33 @@
         margin-top: 60px;
         margin-bottom: 20px;
         background-color: var(--color-background-accent);
+    }
+
+    #btnContainer {
+        display: flex;
+        flex-direction: row;
+        margin-bottom: 20px;
+    }
+
+    .btn {
+        background-color: var(--rk-c-verdigris);
+        height: 50px;
+        width: 200px;
+        border-radius: 5px;
+        margin: 0 20px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .btn span {
+        font-size: larger;
+        font-weight: bolder;
+    }
+
+    ::-webkit-scrollbar-track {
+        margin-top: 15px;
+        margin-bottom: 15px;
     }
 </style>
