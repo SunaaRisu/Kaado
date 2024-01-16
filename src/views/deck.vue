@@ -4,6 +4,7 @@
     import JSConfetti from 'js-confetti';
     import { shuffle, arrayWithoutElementAtIndex } from '../../lib/array';
     import { useUserStore } from '../store/user';
+    import { onKeyStroke } from '@vueuse/core';
 
     const route = useRoute();
     const router = useRouter();
@@ -15,6 +16,10 @@
         confetti.addConfetti()
     }
 
+    onKeyStroke([' ', 'Enter'], (e) => {
+        e.preventDefault();
+        showAnswerOrNextCard();
+    })
 
     const deck = ref(); // Holds the original deck fetched by "fetchDeck()".
     const finished = ref(false); // Is true if all cards has been answerd.
