@@ -69,10 +69,10 @@
     <main>
         <div id="accountBtn" @click="accountBtnOnClick()"><span>{{ btnTxt }}</span></div>
         <userMenu v-if="renderUserMenu"/>
-        <stackCreationSettings v-if="renderStackSettings" ref="stackSettingsRef" />
         <div id="deckPreviewContainer">
             <DeckPreview v-for="deck in decks.decks" :deckInfo="deck"/>
         </div>  
+        <stackCreationSettings v-if="renderStackSettings" ref="stackSettingsRef" />
         <h1>{{ infoTxt }}</h1>
         <a href="https://sunaarisu.de/privacy">Privacy</a>      
     </main>    
