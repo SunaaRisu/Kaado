@@ -3,7 +3,7 @@
     import { useUserStore } from '../store/user';
     import { useRouter } from 'vue-router';
     import { onClickOutside } from '@vueuse/core'
-    import DeckPreview from '../components/deckPreview.vue';
+    import deckPreview from '../components/deckPreview.vue';
     import stackCreationSettings from '../components/stackCreationSettings.vue';
     import userMenu from '../components/userMenu.vue';
 
@@ -15,8 +15,9 @@
     const infoTxt = ref('');
     const btnTxt = ref('Login');
     const renderUserMenu = ref(false);
-    const renderStackSettings = ref(true);
+    const renderStackSettings = ref(false);
     const stackSettingsRef = ref(null);
+    const deckInfoSettings = ref();
 
     onClickOutside(stackSettingsRef, () => {renderStackSettings.value = false});
     
@@ -63,6 +64,11 @@
         }
     }
 
+    function renderStackSettingsFun(deck) {
+        deckInfoSettings.value = deck;
+        renderStackSettings.value = true;
+    }
+
 </script>
 
 <template>
@@ -70,9 +76,9 @@
         <div id="accountBtn" @click="accountBtnOnClick()"><span>{{ btnTxt }}</span></div>
         <userMenu v-if="renderUserMenu"/>
         <div id="deckPreviewContainer">
-            <DeckPreview v-for="deck in decks.decks" :deckInfo="deck"/>
+            <deckPreview @contextmenu.prevent="renderStackSettingsFun(deck)" v-for="deck in decks.decks" :deckInfo="deck"/>
         </div>  
-        <stackCreationSettings v-if="renderStackSettings" ref="stackSettingsRef" />
+        <stackCreationSettings v-if="renderStackSettings" ref="stackSettingsRef" :deckInfo="deckInfoSettings" />
         <h1>{{ infoTxt }}</h1>
         <a href="https://sunaarisu.de/privacy">Privacy</a>      
     </main>    

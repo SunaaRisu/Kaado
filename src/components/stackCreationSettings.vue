@@ -1,18 +1,35 @@
 <script setup>
+    import { ref } from 'vue';
+    import {useUserStore} from '../store/user';
 
+    const user = useUserStore();
+
+    const props = defineProps({
+        deckInfo: Object
+    });
+
+    const cardCount = ref(props.deckInfo.deckSettings.cards_per_stack);
+    const cardCountCheckbox = ref(false);
+
+    if (cardCount.value === props.deckInfo.deckInfo.card_count) {
+        cardCountCheckbox.value = true;
+    }
 </script>
 
 <template>
     <div id="stackSettingsContainer">
         <div id="deckTitle">
-            <span id="title">Minna no Nihongo | Lesson 4</span>
+            <span id="title">{{ deckInfo.deckInfo.title }}</span>
             <span>Stack creation settings</span>
         </div>
         <div class="seperator">ㅤ</div>
         <div id="cardCountSettingsContainer">
             <span>Number of cards</span>
-            <span>20 cards from 40 are in the stack.</span>
-            <input type="range" name="" id="">
+            <div id="inputContainer">
+                <input type="checkbox" name="allCards" id="allCardsCheckbox" v-model="cardCountCheckbox">
+                <label for="allCardsCheckbox">All cards</label>
+                <input type="number" name="cardCount" id="cardCount" v-if="!cardCountCheckbox" min="0" v-model="cardCount">
+            </div>
         </div>
         <div class="seperator">ㅤ</div>
         <div id="cardLayoutSettingContainer">
@@ -84,6 +101,19 @@
         display: flex;
         flex-direction: column;
         align-items: center;
+    }
+
+    #inputContainer label {
+        margin-right: 20px;
+    }
+
+    #cardCount {
+        width: 50px;
+    }
+
+    #cardCountSettingsContainer span {
+        font-weight: bold;
+        margin-bottom: 15px;
     }
 
     #cardLayoutSettingContainer {

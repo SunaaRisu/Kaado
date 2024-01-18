@@ -15,8 +15,8 @@
 
 <template>
     <div class="deckPreviewContainer" @click="openDeck()">
-        <span>{{ deckInfo.title }}</span>
-        <span>Cards: {{ deckInfo.card_count }}</span>
+        <span>{{ deckInfo.deckInfo.title }}</span>
+        <span>Cards: {{ deckInfo.deckInfo.card_count }}</span>
     </div>
 </template>
 

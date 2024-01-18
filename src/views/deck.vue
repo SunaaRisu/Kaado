@@ -78,7 +78,9 @@
 
         TempCardsData.value = deck.value.deck.cards;
 
-        for (let index = 0; index < deck.value.deck.chartDefinition.chart_columns; index++) {
+        
+
+        for (let index = 0; index < deck.value.deck.deck_info.chartDefinition.chart_columns; index++) {
 
             TempCardsData.value.forEach(element => {
                 stack.value.push({
@@ -86,9 +88,13 @@
                     a: arrayWithoutElementAtIndex(element.cardContent, index)
                 })
             });
-        }
-        
-        stack.value = shuffle(stack.value);
+        };
+
+
+
+        if (deck.value.deck.deck_settings.randomize) {
+            stack.value = shuffle(stack.value);
+        }        
         currentCard.value = 0;
         cardAnswered.value = false;
         finished.value = false;
@@ -154,7 +160,7 @@
 
 <template>
     <main>
-        <span id="title" v-if="!finished">{{ deck.deck.title }}</span>
+        <span id="title" v-if="!finished">{{ deck.deck.deck_info.title }}</span>
 
         <div class="card" id="card" v-if="!finished" @click="showAnswerOrNextCard()">
             <span>{{ stack[currentCard].q }}</span>
