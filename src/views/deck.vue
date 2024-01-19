@@ -2,7 +2,7 @@
     import { ref } from 'vue';
     import { useRoute, useRouter } from 'vue-router';
     import JSConfetti from 'js-confetti';
-    import { shuffle, arrayWithoutElementAtIndex } from '../../lib/array';
+    import { shuffle, arrayWithoutElementAtIndex, randomizedArrayWithXElementsFromArray } from '../../lib/array';
     import { useUserStore } from '../store/user';
     import { onKeyStroke } from '@vueuse/core';
 
@@ -28,6 +28,10 @@
     const currentCard = ref(0); // Current card asked.
     const cardAnswered = ref(false); // Is true if the current card has been answerd.
     const failedCards = ref([]); // Holds the card that were put back into the stack.
+
+
+    const randomize = ref(true);
+    const cardCount = ref(10);
     
 
     // Fetches the deck with the id from the route and sets "deck" equal to it.
@@ -76,7 +80,12 @@
 
         stack.value = [];
 
-        TempCardsData.value = deck.value.deck.cards;
+        if (randomize.value) {
+            TempCardsData.value = randomizedArrayWithXElementsFromArray(deck.value.deck.cards, cardCount.value);
+        } else {
+            TempCardsData.value = deck.value.deck.cards;
+            TempCardsData.value = TempCardsData.value.slice(0, cardCount.value);
+        }        
 
         
 
@@ -92,7 +101,7 @@
 
 
 
-        if (deck.value.deck.deck_settings.randomize) {
+        if (randomize.value) {
             stack.value = shuffle(stack.value);
         }        
         currentCard.value = 0;

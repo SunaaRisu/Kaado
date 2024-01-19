@@ -9,11 +9,9 @@
     });
 
     const cardCount = ref(props.deckInfo.deckSettings.cards_per_stack);
-    const cardCountCheckbox = ref(false);
+    const cardCountCheckbox = ref(cardCount.value === props.deckInfo.deckInfo.card_count);
+    const randomizeCheckbox = ref(props.deckInfo.deckSettings.randomize);
 
-    if (cardCount.value === props.deckInfo.deckInfo.card_count) {
-        cardCountCheckbox.value = true;
-    }
 </script>
 
 <template>
@@ -25,16 +23,26 @@
         <div class="seperator">ㅤ</div>
         <div id="cardCountSettingsContainer">
             <span>Number of cards</span>
-            <div id="inputContainer">
+            <div class="inputContainer">
                 <input type="checkbox" name="allCards" id="allCardsCheckbox" v-model="cardCountCheckbox">
                 <label for="allCardsCheckbox">All cards</label>
                 <input type="number" name="cardCount" id="cardCount" v-if="!cardCountCheckbox" min="0" v-model="cardCount">
+            </div>
+            <div class="inputContainer">
+                <input type="checkbox" name="shuffleStack" id="shuffleStackCheckbox" v-model="randomizeCheckbox">
+                <label for="shuffleStackCheckbox">Shuffle stack</label>
             </div>
         </div>
         <div class="seperator">ㅤ</div>
         <div id="cardLayoutSettingContainer">
             <div id="layoutCardFront">
                 <span>Front</span>
+                <div class="cardLayoutInputContainer">
+                    <select name="question" id="questionSelect">
+                        <option value="ALL">all</option>
+                        <option value="element" v-for="element in deckInfo.deckInfo.chartDefinition.chart_columns_name">{{ element }}</option>
+                    </select>
+                </div>
             </div>
             <div id="layoutCardBack">
                 <span>Back</span>
@@ -103,7 +111,7 @@
         align-items: center;
     }
 
-    #inputContainer label {
+    .inputContainer label {
         margin-right: 20px;
     }
 
