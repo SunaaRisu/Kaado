@@ -1,8 +1,10 @@
 <script setup>
     import { ref } from 'vue';
     import {useUserStore} from '../store/user';
+    import { useRouter } from 'vue-router';
 
     const user = useUserStore();
+    const router = useRouter();
 
     const props = defineProps({
         deckInfo: Object
@@ -11,6 +13,30 @@
     const cardCount = ref(props.deckInfo.deckSettings.cards_per_stack);
     const cardCountCheckbox = ref(cardCount.value === props.deckInfo.deckInfo.card_count);
     const randomizeCheckbox = ref(props.deckInfo.deckSettings.randomize);
+    const questionSelect = ref('ALL');
+    const answerSelect = ref(['REMAINING']);
+
+    function updateDeck() {
+        
+    }
+
+    function useOnce() {
+        var query = {
+            cardCount: cardCount.value,
+            randomize: randomizeCheckbox.value,
+            question: questionSelect.value,
+            answer: answerSelect.value
+        };
+
+        if (cardCountCheckbox.value) {
+            query.cardCount = props.deckInfo.deckInfo.card_count;
+        };
+
+        router.push({ 
+            path: '/deck/' + props.deckInfo._id,
+            query: query
+        });
+    }
 
 </script>
 
@@ -35,22 +61,28 @@
         </div>
         <div class="seperator">ㅤ</div>
         <div id="cardLayoutSettingContainer">
-            <div id="layoutCardFront">
+            <div class="layoutCard">
                 <span>Front</span>
                 <div class="cardLayoutInputContainer">
-                    <select name="question" id="questionSelect">
+                    <select name="question" id="questionSelect" v-model="questionSelect">
                         <option value="ALL">all</option>
-                        <option value="element" v-for="element in deckInfo.deckInfo.chartDefinition.chart_columns_name">{{ element }}</option>
+                        <option :value="element" v-for="element in deckInfo.deckInfo.chartDefinition.chart_columns_name">{{ element }}</option>
                     </select>
                 </div>
             </div>
-            <div id="layoutCardBack">
+            <div class="layoutCard">
                 <span>Back</span>
+                    <div class="cardLayoutInputContainer">
+                        <select name="answer" id="answerSelect" v-model="answerSelect[0]">
+                            <option value="REMAINING">all remaining</option>
+                            <option :value="element" v-for="element in deckInfo.deckInfo.chartDefinition.chart_columns_name">{{ element }}</option>
+                        </select>
+                        <select name="" id="" v-if="answerSelect[0] !== 'REMAINING'" v-model="answerSelect[1]">
+                            <option :value="element" v-for="element in deckInfo.deckInfo.chartDefinition.chart_columns_name">{{ element }}</option>
+                        </select>
+                    </div>
+                    
             </div>
-        </div>
-        <div class="seperator">ㅤ</div>
-        <div id="cardFillingContainer">
-            Card Filling
         </div>
         <div class="seperator">ㅤ</div>
         <div id="checkboxContainer">
@@ -59,7 +91,7 @@
         </div>        
         <div id="btnContainer">
             <div class="btn" id="saveBtn"><span>Save</span></div>
-            <div class="btn" id="saveForStack"><span>Use once</span></div>
+            <div class="btn" id="useOnce" @click="useOnce()"><span>Use once</span></div>
         </div>
     </div>
 </template>
@@ -129,22 +161,40 @@
         flex-direction: row;
     }
 
-    #layoutCardFront {
+    .layoutCard {
         background-color: var(--rk-c-verdigris);
         min-height: 200px;
         height: fit-content;
         width: 150px;
         border-radius: 10px;
         margin: 0 25px;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
 
-    #layoutCardBack {
-        background-color: var(--rk-c-verdigris);
-        min-height: 200px;
+    .layoutCard span {
+        margin-top: 10px;
+        font-weight: bold;
+    }
+
+    .cardLayoutInputContainer {
+        width: 90%;
         height: fit-content;
-        width: 150px;
-        border-radius: 10px;
-        margin: 0 25px;
+        margin-top: 20px;
+        
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    #cardLayoutSettingContainer select {
+        width: 80%;
+        margin-bottom: 10px;
+        border-radius: 5px;
+        outline: none;
+        border: none;
     }
 
     #btnContainer {

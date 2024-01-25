@@ -10,6 +10,7 @@
     const router = useRouter();
     const user = useUserStore();
     
+    
     // setup confetti
     const confetti = new JSConfetti();
     function showConfetti() {
@@ -32,6 +33,8 @@
 
     const randomize = ref(true);
     const cardCount = ref(10);
+    const questionSetting = ref('ALL');
+    const answerSetting = ref('REMAINING');    
     
 
     // Fetches the deck with the id from the route and sets "deck" equal to it.
@@ -87,18 +90,24 @@
             TempCardsData.value = TempCardsData.value.slice(0, cardCount.value);
         }        
 
-        
+        if (questionSetting.value === 'ALL' && answerSetting.value[0] === 'REMAINING') {
+            for (let index = 0; index < deck.value.deck.deck_info.chartDefinition.chart_columns; index++) {
 
-        for (let index = 0; index < deck.value.deck.deck_info.chartDefinition.chart_columns; index++) {
-
-            TempCardsData.value.forEach(element => {
+                TempCardsData.value.forEach(element => {
+                    stack.value.push({
+                        q: element.cardContent[index],
+                        a: arrayWithoutElementAtIndex(element.cardContent, index)
+                    })
+                });
+            };
+        } else {
+            TempCardsData.value.forEach(card => {
                 stack.value.push({
-                    q: element.cardContent[index],
-                    a: arrayWithoutElementAtIndex(element.cardContent, index)
+                    q: card.cardContent[deck.value.deck.deck_info.chartDefinition.chart_columns_name.indexOf(questionSetting.value)],
+                    a: card.cardContent[deck.value.deck.deck_info.chartDefinition.chart_columns_name.indexOf(answerSetting.value[0])]
                 })
             });
-        };
-
+        };        
 
 
         if (randomize.value) {
@@ -159,12 +168,32 @@
         stack.value = shuffle(stack.value);
         failedCards.value = [];
     }
+
+    function populateSettings() {
+        if (Object.entries(route.query).length > 0) {
+            randomize.value = route.query.randomize;
+            cardCount.value = route.query.cardCount;
+            questionSetting.value = route.query.question;
+            answerSetting.value = route.query.answer;  
+        } else {
+            randomize.value = deck.value.deck.deck_settings.randomize;
+            cardCount.value = deck.value.deck.deck_settings.cards_per_stack;
+            questionSetting.value = deck.value.deck.deck_settings.card_question;
+            answerSetting.value = deck.value.deck.deck_settings.card_answer;          
+        }
+
+        console.log(randomize.value);
+        console.log(cardCount.value);
+        console.log(questionSetting.value);
+        console.log(answerSetting.value);
+    }
     
 
     await fetchDeck();
 
-    createStackAndStart();
+    populateSettings();
     
+    createStackAndStart();    
 </script>
 
 <template>
@@ -174,8 +203,8 @@
         <div class="card" id="card" v-if="!finished" @click="showAnswerOrNextCard()">
             <span>{{ stack[currentCard].q }}</span>
             <div id="answer" v-if="cardAnswered">
-                <span>{{ stack[currentCard].a[0] }}</span>
-                <span>{{ stack[currentCard].a[1] }}</span>
+                <span v-if="!Array.isArray(stack[currentCard].a)">{{ stack[currentCard].a }}</span>
+                <span v-if="Array.isArray(stack[currentCard].a)" v-for="element in stack[currentCard].a.length">{{ stack[currentCard].a[element - 1] }}</span>
             </div>          
         </div>
 
