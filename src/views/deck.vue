@@ -4,11 +4,13 @@
     import JSConfetti from 'js-confetti';
     import { shuffle, arrayWithoutElementAtIndex, randomizedArrayWithXElementsFromArray } from '../../lib/array';
     import { useUserStore } from '../store/user';
+    import { useDecksStore } from '../store/decks';
     import { onKeyStroke } from '@vueuse/core';
 
     const route = useRoute();
     const router = useRouter();
     const user = useUserStore();
+    const decks = useDecksStore();
     
     
     // setup confetti
@@ -201,12 +203,23 @@
         failedCards.value = [];
     }
 
-    function populateSettings() {
+    async function populateSettings() {
+        var dataFromStore = await decks.getStackSessionById(route.params.id);
+
+        console.log(dataFromStore);
+
         if (Object.entries(route.query).length > 0) {
             randomize.value = route.query.randomize;
             cardCount.value = route.query.cardCount;
             questionSetting.value = route.query.question;
             answerSetting.value = route.query.answer;  
+        } else if (dataFromStore) {
+            if (dataFromStore.id === route.params.id) {
+                randomize.value = dataFromStore.deckSettings.randomize,
+                cardCount.value = dataFromStore.deckSettings.cardCount,
+                questionSetting.value = dataFromStore.deckSettings.question,
+                answerSetting.value = dataFromStore.deckSettings.answer
+            }
         } else {
             randomize.value = deck.value.deck.deck_settings.randomize;
             cardCount.value = deck.value.deck.deck_settings.cards_per_stack;
@@ -222,7 +235,7 @@
 
     await fetchDeck();
 
-    populateSettings();
+    await populateSettings();
     
     createStackAndStart();    
 </script>

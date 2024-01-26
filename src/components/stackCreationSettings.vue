@@ -1,9 +1,11 @@
 <script setup>
     import { ref } from 'vue';
-    import {useUserStore} from '../store/user';
+    import { useUserStore } from '../store/user';
+    import { useDecksStore } from '../store/decks';
     import { useRouter } from 'vue-router';
 
     const user = useUserStore();
+    const decks = useDecksStore();
     const router = useRouter();
 
     const props = defineProps({
@@ -15,6 +17,9 @@
     const randomizeCheckbox = ref(props.deckInfo.deckSettings.randomize);
     const questionSelect = ref('ALL');
     const answerSelect = ref(['REMAINING']);
+
+    const saveForSessionCheckbox = ref(false);
+    const renderHelp = ref(false);
 
     async function updateDeck() {
         if (cardCountCheckbox.value) {
@@ -80,6 +85,25 @@
         });
     }
 
+    function saveForSession() {
+        var query = {
+            cardCount: cardCount.value,
+            randomize: randomizeCheckbox.value,
+            question: questionSelect.value,
+            answer: answerSelect.value
+        };
+
+        if (cardCountCheckbox.value) {
+            query.cardCount = props.deckInfo.deckInfo.card_count;
+        };
+
+        decks.setNewStackSession(props.deckInfo._id, query);
+
+        router.push({
+            path: '/deck/' + props.deckInfo._id
+        })
+    }
+
 </script>
 
 <template>
@@ -94,7 +118,7 @@
             <div class="inputContainer">
                 <input type="checkbox" name="allCards" id="allCardsCheckbox" v-model="cardCountCheckbox">
                 <label for="allCardsCheckbox">All cards</label>
-                <input type="number" name="cardCount" id="cardCount" v-if="!cardCountCheckbox" min="0" v-model="cardCount">
+                <input type="number" name="cardCount" id="cardCount" v-if="!cardCountCheckbox" min="1" v-model="cardCount">
             </div>
             <div class="inputContainer">
                 <input type="checkbox" name="shuffleStack" id="shuffleStackCheckbox" v-model="randomizeCheckbox">
@@ -128,12 +152,23 @@
         </div>
         <div class="seperator">ㅤ</div>
         <div id="checkboxContainer">
-            <input type="checkbox" name="saveToDB" id="checkbox">
-            <label for="checkbox">Only save this settings for this session.</label>
+            <input type="checkbox" name="saveToDB" id="checkbox" v-model="saveForSessionCheckbox">
+            <label for="checkbox">Save and use this settings for this session.</label>
+            <div id="helpIcon" @click="renderHelp = !renderHelp">
+                <span>?</span>
+                <div id="helpTxt" v-if="renderHelp">
+                    <p>This settings for this deck will be saved in local storage.</p>
+                    <p>It will be used as default setting for this deck in this session.</p>
+                    <p>After reloading the page or closing the browser the previous settings will be loaded.</p>
+                </div>
+            </div>
         </div>        
-        <div id="btnContainer">
+        <div class="btnContainer" v-if="!saveForSessionCheckbox">
             <div class="btn" id="saveBtn" @click="updateDeck()"><span>Save</span></div>
             <div class="btn" id="useOnce" @click="useOnce()"><span>Use once</span></div>
+        </div>
+        <div class="btnContainer" v-if="saveForSessionCheckbox">
+            <div class="btn" id="saveForSessionBtn" @click="saveForSession()"><span>Accept</span></div>
         </div>
     </div>
 </template>
@@ -193,7 +228,7 @@
         width: 50px;
     }
 
-    #cardCountSettingsContainer span {
+    #cardCountSettingsContaibtnContainerner span {
         font-weight: bold;
         margin-bottom: 15px;
     }
@@ -239,7 +274,7 @@
         border: none;
     }
 
-    #btnContainer {
+    .btnContainer {
         display: flex;
         flex-direction: row;
         flex-wrap: wrap;
@@ -261,6 +296,37 @@
     .btn span {
         font-size: larger;
         font-weight: bolder;
+    }
+
+    #checkboxContainer {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
+    #checkboxContainer label {
+        margin-left: 5px;
+        margin-right: 10px;
+    }
+
+    #helpIcon {
+        background-color: var(--rk-c-verdigris);
+        height: 25px;
+        width: 25px;
+        border-radius: 5px;
+
+        display: flex;
+        justify-content: center;
+    }
+
+    #helpTxt {
+        position: absolute;
+        top: 332px;
+        left: 9px;
+        background-color: var(--rk-c-verdigris);
+        border: 2px solid var(--color-background);
+        border-radius: 10px;
+        padding: 10px;
     }
 
     ::-webkit-scrollbar-track {
