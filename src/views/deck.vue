@@ -100,13 +100,23 @@
                     })
                 });
             };
-        } else {
-            TempCardsData.value.forEach(card => {
-                stack.value.push({
-                    q: card.cardContent[deck.value.deck.deck_info.chartDefinition.chart_columns_name.indexOf(questionSetting.value)],
-                    a: card.cardContent[deck.value.deck.deck_info.chartDefinition.chart_columns_name.indexOf(answerSetting.value[0])]
-                })
-            });
+        } else if (questionSetting.value === 'ALL' && answerSetting.value[0] !== 'REMAINING') {
+
+        } else if (questionSetting.value !== 'ALL' && answerSetting.value[0] === 'REMAINING') {
+
+        } else{            
+                TempCardsData.value.forEach(card => {
+                    var answerArray = [];
+    
+                    answerSetting.value.forEach(element => {
+                        answerArray.push(card.cardContent[deck.value.deck.deck_info.chartDefinition.chart_columns_name.indexOf(element)]);
+                    });
+
+                    stack.value.push({
+                        q: card.cardContent[deck.value.deck.deck_info.chartDefinition.chart_columns_name.indexOf(questionSetting.value)],
+                        a: answerArray
+                    })
+                })      
         };        
 
 

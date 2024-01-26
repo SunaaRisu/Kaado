@@ -40,7 +40,6 @@
             .then(response => {
                 switch(response.status) {
                     case 200:
-                        console.log(response)
                         router.push({ path: '/deck/' + props.deckInfo._id })
                         break;
 
