@@ -2,12 +2,16 @@
     import { ref } from 'vue';
     import { useRoute, useRouter } from 'vue-router';
     import JSConfetti from 'js-confetti';
-    import { shuffle, arrayWithoutElementAtIndex } from '../../lib/array';
+    import { shuffle, arrayWithoutElementAtIndex, randomizedArrayWithXElementsFromArray } from '../../lib/array';
     import { useUserStore } from '../store/user';
+    import { useDecksStore } from '../store/decks';
+    import { onKeyStroke } from '@vueuse/core';
 
     const route = useRoute();
     const router = useRouter();
     const user = useUserStore();
+    const decks = useDecksStore();
+    
     
     // setup confetti
     const confetti = new JSConfetti();
@@ -15,6 +19,10 @@
         confetti.addConfetti()
     }
 
+    onKeyStroke([' ', 'Enter'], (e) => {
+        e.preventDefault();
+        showAnswerOrNextCard();
+    })
 
     const deck = ref(); // Holds the original deck fetched by "fetchDeck()".
     const finished = ref(false); // Is true if all cards has been answerd.
@@ -23,6 +31,12 @@
     const currentCard = ref(0); // Current card asked.
     const cardAnswered = ref(false); // Is true if the current card has been answerd.
     const failedCards = ref([]); // Holds the card that were put back into the stack.
+
+
+    const randomize = ref(true);
+    const cardCount = ref(10);
+    const questionSetting = ref('ALL');
+    const answerSetting = ref('REMAINING');    
     
 
     // Fetches the deck with the id from the route and sets "deck" equal to it.
@@ -71,19 +85,68 @@
 
         stack.value = [];
 
-        TempCardsData.value = deck.value.deck.cards;
+        if (randomize.value) {
+            TempCardsData.value = randomizedArrayWithXElementsFromArray(deck.value.deck.cards, cardCount.value);
+        } else {
+            TempCardsData.value = deck.value.deck.cards;
+            TempCardsData.value = TempCardsData.value.slice(0, cardCount.value);
+        }        
 
-        for (let index = 0; index < deck.value.deck.chartDefinition.chart_columns; index++) {
+        if (questionSetting.value === 'ALL' && answerSetting.value[0] === 'REMAINING') {
+            for (let index = 0; index < deck.value.deck.deck_info.chartDefinition.chart_columns; index++) {
 
+                TempCardsData.value.forEach(element => {
+                    stack.value.push({
+                        q: element.cardContent[index],
+                        a: arrayWithoutElementAtIndex(element.cardContent, index)
+                    })
+                });
+            };
+        } else if (questionSetting.value === 'ALL' && answerSetting.value[0] !== 'REMAINING') {
+            for (let index = 0; index < deck.value.deck.deck_info.chartDefinition.chart_columns; index++) {
+
+                if (!answerSetting.value.includes(deck.value.deck.deck_info.chartDefinition.chart_columns_name[index])) {
+                    
+                    TempCardsData.value.forEach(card => {
+                        var answerArray = [];
+        
+                        answerSetting.value.forEach(element => {
+                            answerArray.push(card.cardContent[deck.value.deck.deck_info.chartDefinition.chart_columns_name.indexOf(element)]);
+                        });
+
+                        stack.value.push({
+                            q: card.cardContent[index],
+                            a: answerArray
+                        })
+                    })   
+                } 
+            }
+        } else if (questionSetting.value !== 'ALL' && answerSetting.value[0] === 'REMAINING') {
             TempCardsData.value.forEach(element => {
                 stack.value.push({
-                    q: element.cardContent[index],
-                    a: arrayWithoutElementAtIndex(element.cardContent, index)
+                    q: element.cardContent[deck.value.deck.deck_info.chartDefinition.chart_columns_name.indexOf(questionSetting.value)],
+                    a: arrayWithoutElementAtIndex(element.cardContent, deck.value.deck.deck_info.chartDefinition.chart_columns_name.indexOf(questionSetting.value))
                 })
             });
-        }
-        
-        stack.value = shuffle(stack.value);
+        } else{            
+                TempCardsData.value.forEach(card => {
+                    var answerArray = [];
+    
+                    answerSetting.value.forEach(element => {
+                        answerArray.push(card.cardContent[deck.value.deck.deck_info.chartDefinition.chart_columns_name.indexOf(element)]);
+                    });
+
+                    stack.value.push({
+                        q: card.cardContent[deck.value.deck.deck_info.chartDefinition.chart_columns_name.indexOf(questionSetting.value)],
+                        a: answerArray
+                    })
+                })      
+        };        
+
+
+        if (randomize.value) {
+            stack.value = shuffle(stack.value);
+        }        
         currentCard.value = 0;
         cardAnswered.value = false;
         finished.value = false;
@@ -139,23 +202,53 @@
         stack.value = shuffle(stack.value);
         failedCards.value = [];
     }
-    
+
+    async function populateSettings() {
+        var dataFromStore = await decks.getStackSessionById(route.params.id);
+
+        console.log(dataFromStore);
+
+        if (Object.entries(route.query).length > 0) {
+            randomize.value = route.query.randomize;
+            cardCount.value = route.query.cardCount;
+            questionSetting.value = route.query.question;
+            answerSetting.value = route.query.answer;  
+        } else if (dataFromStore) {
+            if (dataFromStore.id === route.params.id) {
+                randomize.value = dataFromStore.deckSettings.randomize,
+                cardCount.value = dataFromStore.deckSettings.cardCount,
+                questionSetting.value = dataFromStore.deckSettings.question,
+                answerSetting.value = dataFromStore.deckSettings.answer
+            }
+        } else {
+            randomize.value = deck.value.deck.deck_settings.randomize;
+            cardCount.value = deck.value.deck.deck_settings.cards_per_stack;
+            questionSetting.value = deck.value.deck.deck_settings.card_question;
+            answerSetting.value = deck.value.deck.deck_settings.card_answer;          
+        }
+
+        console.log(randomize.value);
+        console.log(cardCount.value);
+        console.log(questionSetting.value);
+        console.log(answerSetting.value);
+    }    
 
     await fetchDeck();
 
-    createStackAndStart();
+    await populateSettings();
     
+    createStackAndStart();    
 </script>
 
 <template>
     <main>
-        <span id="title" v-if="!finished">{{ deck.deck.title }}</span>
+        <span id="title" v-if="!finished">{{ deck.deck.deck_info.title }}</span>
 
         <div class="card" id="card" v-if="!finished" @click="showAnswerOrNextCard()">
             <span>{{ stack[currentCard].q }}</span>
             <div id="answer" v-if="cardAnswered">
-                <span>{{ stack[currentCard].a[0] }}</span>
-                <span>{{ stack[currentCard].a[1] }}</span>
+                <span v-if="!Array.isArray(stack[currentCard].a)">{{ stack[currentCard].a }}</span>
+                <span v-if="Array.isArray(stack[currentCard].a)" v-for="element in stack[currentCard].a.length">{{ stack[currentCard].a[element - 1] }}</span>
             </div>          
         </div>
 
