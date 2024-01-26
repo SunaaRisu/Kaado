@@ -101,7 +101,27 @@
                 });
             };
         } else if (questionSetting.value === 'ALL' && answerSetting.value[0] !== 'REMAINING') {
+            for (let index = 0; index < deck.value.deck.deck_info.chartDefinition.chart_columns; index++) {
+                console.log(index);
+                if (!answerSetting.value.includes(deck.value.deck.deck_info.chartDefinition.chart_columns_name[index])) {
+                    console.log('do');
+                    
+                    TempCardsData.value.forEach(card => {
+                        var answerArray = [];
+        
+                        answerSetting.value.forEach(element => {
+                            answerArray.push(card.cardContent[deck.value.deck.deck_info.chartDefinition.chart_columns_name.indexOf(element)]);
+                        });
 
+                        stack.value.push({
+                            q: card.cardContent[index],
+                            a: answerArray
+                        })
+                    })   
+                } else {
+                    console.log('dont');
+                }
+            }
         } else if (questionSetting.value !== 'ALL' && answerSetting.value[0] === 'REMAINING') {
 
         } else{            
@@ -196,8 +216,7 @@
         console.log(cardCount.value);
         console.log(questionSetting.value);
         console.log(answerSetting.value);
-    }
-    
+    }    
 
     await fetchDeck();
 
