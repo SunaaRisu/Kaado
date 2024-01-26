@@ -102,9 +102,8 @@
             };
         } else if (questionSetting.value === 'ALL' && answerSetting.value[0] !== 'REMAINING') {
             for (let index = 0; index < deck.value.deck.deck_info.chartDefinition.chart_columns; index++) {
-                console.log(index);
+
                 if (!answerSetting.value.includes(deck.value.deck.deck_info.chartDefinition.chart_columns_name[index])) {
-                    console.log('do');
                     
                     TempCardsData.value.forEach(card => {
                         var answerArray = [];
@@ -118,12 +117,15 @@
                             a: answerArray
                         })
                     })   
-                } else {
-                    console.log('dont');
-                }
+                } 
             }
         } else if (questionSetting.value !== 'ALL' && answerSetting.value[0] === 'REMAINING') {
-
+            TempCardsData.value.forEach(element => {
+                stack.value.push({
+                    q: element.cardContent[deck.value.deck.deck_info.chartDefinition.chart_columns_name.indexOf(questionSetting.value)],
+                    a: arrayWithoutElementAtIndex(element.cardContent, deck.value.deck.deck_info.chartDefinition.chart_columns_name.indexOf(questionSetting.value))
+                })
+            });
         } else{            
                 TempCardsData.value.forEach(card => {
                     var answerArray = [];
