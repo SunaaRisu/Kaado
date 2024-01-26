@@ -16,8 +16,51 @@
     const questionSelect = ref('ALL');
     const answerSelect = ref(['REMAINING']);
 
-    function updateDeck() {
-        
+    async function updateDeck() {
+        if (cardCountCheckbox.value) {
+            cardCount.value = props.deckInfo.deckInfo.card_count;
+        };
+
+        const request = {
+            method: 'POST',
+            credentials: 'include',
+            headers: {'Content-Type': 'application/json', 'Accept': 'application/json', 'Authorization': 'Bearer ' + await user.get_jwt() },
+            body: JSON.stringify({ 
+                _id: props.deckInfo._id, 
+                updates: [
+                    {field: 'deck_settings.cards_per_stack', value: cardCount.value},
+                    {field: 'deck_settings.randomize', value: randomizeCheckbox.value},
+                    {field: 'deck_settings.card_question', value: questionSelect.value},
+                    {field: 'deck_settings.card_answer', value: answerSelect.value}
+                ]
+            })
+        };
+
+        fetch('http://localhost:3000/deck/update', request)
+            .then(response => {
+                switch(response.status) {
+                    case 200:
+                        console.log(response)
+                        router.push({ path: '/deck/' + props.deckInfo._id })
+                        break;
+
+                    case 404:
+                        alert('deck not found');
+                        break;
+                    
+                    case 500:
+                        alert('something went wrong');
+                        break;
+                
+                    default:
+                        alert('something went wrong');
+                        break;
+                };
+            })
+            .catch(err => {
+                console.log(err);
+                alert('something went wrong');
+            });
     }
 
     function useOnce() {
@@ -90,7 +133,7 @@
             <label for="checkbox">Only save this settings for this session.</label>
         </div>        
         <div id="btnContainer">
-            <div class="btn" id="saveBtn"><span>Save</span></div>
+            <div class="btn" id="saveBtn" @click="updateDeck()"><span>Save</span></div>
             <div class="btn" id="useOnce" @click="useOnce()"><span>Use once</span></div>
         </div>
     </div>
