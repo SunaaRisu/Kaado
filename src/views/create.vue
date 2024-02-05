@@ -11,8 +11,17 @@
             <div class="tab" id="addTab" @click="router.push({ path: '/marketplace' })"><span>Add deck from the marketplace</span></div>
         </div>
         <div id="pageContainer">
+            <div id="deckInfoContainer">
+                <span>Title</span>
+                <input type="text">
+                <span>Description</span>
+                <textarea name="" id="" cols="30" rows="10"></textarea>
+            </div>
+            <div id="cardsInputContainer">
+                
+            </div>            
             <div class="btnContainer">
-                <div class="btn" id="cancelBtn" @click=""><span>Cancel</span></div>
+                <div class="btn" id="cancelBtn" @click="router.push({ path: '/' })"><span>Cancel</span></div>
                 <div class="btn" id="CreateBtn" @click=""><span>Create</span></div>
             </div>
         </div>
@@ -23,7 +32,6 @@
 
     main {
         width: 95vw;
-        height: 95vh;
     }
 
     #tabContainer {
@@ -56,18 +64,42 @@
     }
 
     #pageContainer {
-        height: fit-content;
-        max-height: 90vh;
-        width: 95vw;
         background-color: var(--rk-c-robin_egg_blue);
         border-radius: 0 0 10px 10px;
     }
 
     .btnContainer {
+        width: 100%;
+
         display: flex;
         flex-direction: row;
         flex-wrap: wrap;
+        justify-content: center;
         margin: 20px 0;
     }
+
+    .btn {
+        background-color: var(--rk-c-verdigris);
+        height: 50px;
+        width: 250px;
+        border-radius: 5px;
+        margin: 5px 50px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .btn span {
+        font-size: larger;
+        font-weight: bolder;
+    }
+
+    #deckInfoContainer {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
 
 </style>
