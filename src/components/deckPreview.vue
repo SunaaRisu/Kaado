@@ -8,7 +8,7 @@
     });
 
     function openDeck(){
-        router.push({ path: '/deck/' + props.deckInfo._id}); // redirect to /deck/(deck id)
+        router.push({ path: '/deck/' + props.deckInfo._id }); // redirect to /deck/(deck id)
     }
 
 </script>

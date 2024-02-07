@@ -77,6 +77,7 @@
         <userMenu v-if="renderUserMenu"/>
         <div id="deckPreviewContainer">
             <deckPreview @contextmenu.prevent="renderStackSettingsFun(deck)" v-for="deck in decks.decks" :deckInfo="deck"/>
+            <div id="addDeckBtn" @click="router.push({ path: '/create' })">Add a Deck</div>
         </div>  
         <stackCreationSettings v-if="renderStackSettings" ref="stackSettingsRef" :deckInfo="deckInfoSettings" />
         <h1>{{ infoTxt }}</h1>
@@ -134,5 +135,21 @@
         bottom: 10px;
         text-decoration: none;
         color: var(--color-text-light);
+    }
+
+    #addDeckBtn {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 20px;
+        background-color: var(--rk-c-robin_egg_blue);
+
+        height: 88px;
+        width: 240px;
+        
+        font-size: larger;
+        font-weight: bolder;
     }
 </style>
