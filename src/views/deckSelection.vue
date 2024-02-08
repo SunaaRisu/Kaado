@@ -142,6 +142,7 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
+        margin: 20px;
 
         border-radius: 20px;
         background-color: var(--rk-c-robin_egg_blue);

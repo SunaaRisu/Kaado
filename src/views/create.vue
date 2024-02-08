@@ -41,6 +41,15 @@
     }
 
     async function createDeck() {
+        var tempcards = [];
+
+        cards.value.forEach(element => {
+            tempcards.push({
+                cardNumber: cards.value.indexOf(element) + 1,
+                cardContent: element
+            })
+        });
+
         const request = {
             method: 'POST',
             credentials: 'include',
@@ -48,12 +57,10 @@
             body: JSON.stringify({ 
                 title: title.value,
                 description: description.value,
-                card_count: cards.value.length,
-                chart_definition: {
-                    chart_columns: chart_columns_name.value.length,
-                    chart_columns_name: chart_columns_name.value
-                },
-                cards: cards.value
+                card_count: cards.value.length,                
+                chart_columns: chart_columns_name.value.length,
+                chart_columns_name: chart_columns_name.value,                
+                cards: tempcards
             })
         }
 
