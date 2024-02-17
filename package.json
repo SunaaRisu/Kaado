@@ -1,6 +1,6 @@
 {
   "name": "kaado",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Web frontend for the RISU Kaado app",
   "scripts": {
     "dev": "vite",
@@ -9,11 +9,14 @@
   "dependencies": {
     "@vueuse/core": "^10.3.0",
     "bcryptjs": "^2.4.3",
+    "dotenv": "^16.4.4",
     "js-confetti": "^0.12.0",
     "jwt-decode": "^3.1.2",
+    "mathlive": "^0.98.6",
     "pinia": "^2.1.6",
     "vue": "^3.3.4",
     "vue-cookies": "^1.8.3",
+    "vue-mathjax": "^0.1.1",
     "vue-router": "^4.2.4"
   },
   "devDependencies": {

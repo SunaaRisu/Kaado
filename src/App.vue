@@ -22,7 +22,7 @@
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }
     };
 
-    fetch('http://localhost:3000/user/refresh_token', request)
+    fetch(import.meta.env.VITE_API + 'user/refresh_token', request)
         .then(response => {
             switch (response.status) {
                 case 200:
@@ -61,7 +61,7 @@
              })
         };
 
-        fetch('http://localhost:3000/user/update_user', request)
+        fetch(import.meta.env.VITE_API + 'user/update_user', request)
             .then(response => {
                 switch (response.status) {
                     case 200:
