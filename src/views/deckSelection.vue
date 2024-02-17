@@ -27,7 +27,7 @@
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'Authorization': 'Bearer ' + await user.get_jwt() }
     }
 
-    fetch('http://localhost:3000/deck/get_deck_list', request)
+    fetch(import.meta.env.VITE_API + 'deck/get_deck_list', request)
         .then(response => {
             switch (response.status) {
                 case 200:

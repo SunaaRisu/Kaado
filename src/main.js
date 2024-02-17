@@ -2,6 +2,7 @@ import './assets/base.css';
 
 import { createApp, markRaw } from "vue";
 import { createPinia } from 'pinia';
+import * as MathfieldElement from 'mathlive';
 
 import App from "./App.vue";
 import router from './router';
@@ -13,6 +14,7 @@ pinia.use(({ store }) => {
     store.$router = markRaw(router);
 })
 
+app.use(MathfieldElement)
 app.use(pinia)
 app.use(router)
 

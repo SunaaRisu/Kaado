@@ -41,7 +41,7 @@ export const useUserStore = defineStore('user', {
                     headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }
                 };
 
-                const response = await fetch('http://localhost:3000/user/refresh_token', request);
+                const response = await fetch(import.meta.env.VITE_API + 'user/refresh_token', request);
 
                 if (response.status !== 200) {
                     this.$router.push({ path: '/login' });

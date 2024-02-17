@@ -41,7 +41,7 @@
             })
         };
 
-        fetch('http://localhost:3000/deck/update', request)
+        fetch(import.meta.env.VITE_API + 'deck/update', request)
             .then(response => {
                 switch(response.status) {
                     case 200:

@@ -6,6 +6,7 @@
     import { useUserStore } from '../store/user';
     import { useDecksStore } from '../store/decks';
     import { onKeyStroke } from '@vueuse/core';
+import { MathfieldElement } from 'mathlive';
 
     const route = useRoute();
     const router = useRouter();
@@ -37,6 +38,8 @@
     const cardCount = ref(10);
     const questionSetting = ref('ALL');
     const answerSetting = ref('REMAINING');    
+
+    const equationArr = ref([]);
     
 
     // Fetches the deck with the id from the route and sets "deck" equal to it.
@@ -48,7 +51,7 @@
             body: JSON.stringify({ _id: route.params.id })
         }
 
-        await fetch('http://localhost:3000/deck/get_one', request)
+        await fetch(import.meta.env.VITE_API + 'deck/get_one', request)
             .then(response => {
                 switch(response.status) {
                     case 200:
@@ -151,6 +154,8 @@
         cardAnswered.value = false;
         finished.value = false;
         failedCards.value = [];
+
+        checkForEquations();
     }
 
     // Shows the Answer or increases "currentCard" by 1 based on "cardAnswered". If the stack is finished it displays the menu.
@@ -163,6 +168,7 @@
 
             if (currentCard.value < stack.value.length - 1) {
                 currentCard.value++;
+                checkForEquations();
             }else{
                 finished.value = true;
                 showConfetti();
@@ -173,6 +179,26 @@
                 }
             }
         }        
+    }
+
+    function checkForEquations(){
+        if (stack.value[currentCard.value].q.includes('#LaTeX')) {
+            stack.value[currentCard.value].q = stack.value[currentCard.value].q.replace('#LaTeX', '');
+            equationArr.value = [true];
+        } else {
+            equationArr.value = [false];
+        }
+
+        stack.value[currentCard.value].a.forEach(element => {
+            if (element.includes('#LaTeX')) {
+                stack.value[currentCard.value].a[stack.value[currentCard.value].a.indexOf(element)] = element.replace('#LaTeX', '');
+                equationArr.value.push(true);
+            } else {
+                equationArr.value.push(false);
+            }
+        });
+
+        console.log(equationArr.value);
     }
 
     // Pushes current card to "failedCards" and puts the card back into the next 10 cards of the current stack.
@@ -245,10 +271,18 @@
         <span id="title" v-if="!finished">{{ deck.deck.deck_info.title }}</span>
 
         <div class="card" id="card" v-if="!finished" @click="showAnswerOrNextCard()">
-            <span>{{ stack[currentCard].q }}</span>
+            <span v-if="!equationArr[0]">{{ stack[currentCard].q }}</span>
+            <math-field class="math" read-only v-if="equationArr[0]">{{ stack[currentCard].q }}</math-field>
             <div id="answer" v-if="cardAnswered">
-                <span v-if="!Array.isArray(stack[currentCard].a)">{{ stack[currentCard].a }}</span>
-                <span v-if="Array.isArray(stack[currentCard].a)" v-for="element in stack[currentCard].a.length">{{ stack[currentCard].a[element - 1] }}</span>
+                <div class="answerContainer" v-if="!Array.isArray(stack[currentCard].a)">
+                    <span v-if="!equationArr[1]">{{ stack[currentCard].a }}</span>
+                    <math-field class="math" read-only v-if="equationArr[1]">{{ stack[currentCard].a }}</math-field>
+                    <span>single</span>
+                </div>
+                <div class="answerArrayContainer" v-for="element in stack[currentCard].a.length" v-if="Array.isArray(stack[currentCard].a)">
+                    <span v-if="!equationArr[element]">{{ stack[currentCard].a[element - 1] }}</span>
+                    <math-field class="math" read-only v-if="equationArr[element]">{{ stack[currentCard].a[element - 1] }}</math-field>
+                </div>                
             </div>          
         </div>
 
@@ -297,6 +331,9 @@
 
     span {
         font-weight: bolder;
+        text-align: center;
+        width: 400px;
+        display: block;
     }
 
     #showAnswerBtn {
@@ -357,7 +394,7 @@
     .card {
         background-color: var(--rk-c-robin_egg_blue);
         height: 500px;
-        width: 400px;
+        min-width: 400px;
         padding: 20px;
 
         border-radius: 20px;
@@ -432,5 +469,12 @@
         display: flex;
         justify-content: center;
         align-items: center;
+    }
+
+    .math {
+        background-color: var(--rk-c-robin_egg_blue);
+        border: none;
+        font-size: larger;
+        font-weight: bolder;
     }
 </style>

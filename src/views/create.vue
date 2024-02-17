@@ -64,7 +64,7 @@
             })
         }
 
-        await fetch('http://localhost:3000/deck/create', request)
+        await fetch(import.meta.env.VITE_API + 'deck/create', request)
             .then(response => {
                 switch(response.status) {
                     case 201:

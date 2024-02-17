@@ -37,7 +37,7 @@
             body: JSON.stringify({ identifier: identifier.value, password: password.value })
         }
 
-        fetch('http://localhost:3000/user/login', request)
+        fetch(import.meta.env.VITE_API + 'user/login', request)
             .then(response => {
                 switch (response.status) {
                     case 200:

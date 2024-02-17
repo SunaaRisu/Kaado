@@ -107,7 +107,7 @@
                         })
                 };
 
-                fetch('http://localhost:3000/user/signup', request)
+                fetch(import.meta.env.VITE_API + 'user/signup', request)
                     .then(response => {
                         switch (response.status) {
                             case 201:
