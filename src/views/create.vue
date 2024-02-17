@@ -122,7 +122,9 @@
                     </div>
                     <div id="addRowBtn" @click="addRow()">+</div>
                 </div>
-            </div>            
+                <span>Use LaTeX syntax for equations.</span>
+                <span>Mark equations with "#LaTeX" at the beginning.</span>
+            </div>           
             <div class="btnContainer">
                 <div class="btn" id="cancelBtn" @click="router.push({ path: '/' })"><span>Cancel</span></div>
                 <div class="btn" id="CreateBtn" @click="createDeck()"><span>Create</span></div>

@@ -19,9 +19,9 @@
         <div class="seperator" id="newSeperator" v-if="renderNewFeatures"><span class="seperatorTitle">New Features</span></div>
         <div class="textContainer" id="newText" v-if="renderNewFeatures">
             <ul>
-                <li>You can now click on the card to show the answer end go to the next card.</li>
-                <li>Clicking on the right and left from the card asks the card again or moves it to the back of the stack. You can see on which side you have to click by loking at the position of the buttons under the card.</li>
-                <li>The order of the three action buttons below the card was changed.</li>
+                <li>You can now create your own decks. :3</li>
+                <li>Added support for equations using LaTeX.</li>
+                <li>Right-clicking on a deck preview card opens a settings window where you can choose how the stack is created.</li>
             </ul>            
         </div>
         <div class="seperator" id="fixedSeperator" v-if="renderFixedIssues"><span class="seperatorTitle" >Fixed Issues</span></div>
@@ -34,6 +34,7 @@
         <div class="textContainer" id="knownText" v-if="renderKnownIssues">
             <ul>
                 <li>Redirect after login and signup does not work everytime.</li>
+                <li>The deck content table sometimes writes to incorrect cells during deck creation.</li>
             </ul>
         </div>
     </div>
