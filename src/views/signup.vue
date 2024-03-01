@@ -133,7 +133,7 @@
                             const jwtData = jwt_decode(data.token);
                             user.setUser(jwtData._id, jwtData.username, jwtData.email, jwtData.version);
 
-                            router.go(-1);
+                            router.push({path: '/'});
                         }
                     })
                     .catch(err => {

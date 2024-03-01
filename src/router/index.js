@@ -15,7 +15,8 @@ const router = createRouter({
         {path: '/signup', name: 'signup', component: SignupView},
         {path: '/login', name: 'login', component: LoginView},
         {path: '/create', name: 'create', component: CreateView},
-        {path: '/marketplace', name: 'marketplace', component: MarketplaceView}
+        {path: '/marketplace', name: 'marketplace', component: MarketplaceView},
+        {path: '/marketplace/:id', name: 'marketplaceInfo', component: MarketplaceView}
     ]
 });
 

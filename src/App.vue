@@ -30,7 +30,6 @@
                     break;
             
                 default:
-                    router.push({ path: '/login' })
                     break;
             }
         })
@@ -40,6 +39,7 @@
             user.setUser(jwtData._id, jwtData.username, jwtData.email, jwtData.version);
 
             if (user.$state.user.version !== version) {
+                console.log(user.$state.user.version)
                 renderPatchnotes.value = true;
             }
         })

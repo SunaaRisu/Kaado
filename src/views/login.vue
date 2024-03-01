@@ -60,9 +60,9 @@
                     if (data) {
                         user.setJWT(data.token);
                         const jwtData = jwt_decode(data.token);
-                        user.setUser(jwtData._id, jwtData.username, jwtData.email, jwtData.version);
+                        user.setUser(jwtData._id, jwtData.username, jwtData.email, jwtData.version, jwtData.profilePicture);
 
-                        router.go(-1);
+                        router.push({path: '/'});
                     }
                 })
             .catch(err => {

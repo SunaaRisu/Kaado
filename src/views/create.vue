@@ -7,6 +7,11 @@
     const user = useUserStore();
 
 
+    if (user.$state.user.username === '') {
+        router.push({ path: '/login?', query: {o: 'create'}})
+    }
+
+
     const title = ref();
     const description = ref();
     const chart_columns_name = ref(['Question', 'Answer']);
