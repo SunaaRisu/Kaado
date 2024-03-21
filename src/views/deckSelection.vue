@@ -23,11 +23,17 @@
     const fetchFinished = ref(false);
 
     onClickOutside(stackSettingsRef, () => {renderStackSettings.value = false});
-    
+
+    const jwt = await user.get_jwt();
+
+    if (jwt === 'no token') {
+        router.push({ path: '/login', query: {o: 'home'} });
+    }
+
     const request = {
         method: 'GET',
         credentials: 'include',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'Authorization': 'Bearer ' + await user.get_jwt() }
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'Authorization': 'Bearer ' + jwt }
     }
 
     fetch(import.meta.env.VITE_API + 'user/get_deck_list', request)

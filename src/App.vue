@@ -5,11 +5,12 @@
     import patchnotes from './components/patchnotes.vue';
     import { useUserStore } from './store/user';
     import { version } from '../package.json';
-    import { useRouter } from 'vue-router';
+    import { useRouter, useRoute } from 'vue-router';
     import jwt_decode from 'jwt-decode';
 
     const user = useUserStore();
     const router = useRouter();
+    const route = useRoute();
 
     const patchnotesRef = ref(null);
     const renderPatchnotes = ref(false);
@@ -30,6 +31,11 @@
                     break;
             
                 default:
+                    if (route.path === '/home') {
+                        router.push({ path: '/login', query: {o: 'home'} });
+                    } else if (route.path === '/create') {
+                        router.push({ path: '/login', query: {o: 'create'}})
+                    }
                     break;
             }
         })
@@ -83,7 +89,7 @@
 
 <template>
     <Suspense>        
-        <RouterView/>
+        <RouterView :key="$route.path"/>
     </Suspense>    
     <Suspense>
         <patchnotes v-if="renderPatchnotes" ref="patchnotesRef" @response="patchnotesRead()"/>

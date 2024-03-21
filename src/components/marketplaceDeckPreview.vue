@@ -20,10 +20,16 @@
     }
 
     async function addOrRmv(add) {
+        const jwt = await user.get_jwt();
+
+        if (jwt === 'no token') {
+            router.push({path: '/login', query: {o: 'marketplace', d: props.deckInfo._id}})
+        }
+
         const request = {
             method: 'PATCH',
             credentials: 'include',
-            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'Authorization': 'Bearer ' + await user.get_jwt() },
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'Authorization': 'Bearer ' + jwt },
             body: JSON.stringify({
                 deckid: props.deckInfo._id,
                 add: add
@@ -38,11 +44,9 @@
                         break;
 
                     case 500:
-                        console.log('error');
                         break;
 
                     default:
-                        console.log('error');
                         break;
                 };
             })
@@ -62,7 +66,7 @@
         <div class="btnContainer">
             <button @click="renderInfo = true">Info</button>
             <button v-if="!added" @click="router.push({ path: '/deck/' + deckInfo._id})">Learn</button>
-            <button v-if="added" @click="router.push({ path: '/'})">Go to</button>
+            <button v-if="added" @click="router.push({ path: '/home'})">Go to</button>
             <button v-if="!added" @click="addOrRmv(true)">Add</button>
             <button v-if="added" @click="addOrRmv(false)">Rmv</button>
         </div>

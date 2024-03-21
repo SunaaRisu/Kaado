@@ -1,10 +1,11 @@
 <script setup>
     import { ref } from 'vue';
     import { useUserStore } from '../store/user';
-    import { useRouter } from 'vue-router';
+    import { useRouter, useRoute } from 'vue-router';
     import jwt_decode from "jwt-decode";
 
     const router = useRouter();
+    const route = useRoute();
     const user = useUserStore();
 
 
@@ -62,7 +63,14 @@
                         const jwtData = jwt_decode(data.token);
                         user.setUser(jwtData._id, jwtData.username, jwtData.email, jwtData.version, jwtData.profilePicture);
 
-                        router.push({path: '/'});
+                        if (route.query.o === '' || route.query.o === undefined) {
+                            router.push({path: '/home'});
+                        } else if (route.query.d) {
+                            router.push({path: '/' + route.query.o + '/' + route.query.d});
+                        } else {
+                            router.push({path: '/' + route.query.o});
+                        }
+                        
                     }
                 })
             .catch(err => {
@@ -88,7 +96,7 @@
                 <button class="sign_up_btn" type="submit" name="submit"><strong>Login</strong></button>
             </form>
             <div class="form_footer">
-                <RouterLink to="/signup"><p>Dont't have an account yet?</p></RouterLink>
+                <RouterLink :to="{path: '/signup', query: route.query}"><p>Dont't have an account yet?</p></RouterLink>
                 <a href="https://sunaarisu.de/privacy">Privacy</a>
             </div>
         </div>        

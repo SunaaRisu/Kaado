@@ -6,25 +6,23 @@
     const router = useRouter();
     const user = useUserStore();
 
-
-    if (user.$state.user.username === '') {
-        router.push({ path: '/login?', query: {o: 'create'}})
-    }
-
-
     const title = ref();
     const description = ref();
     const chart_columns_name = ref(['Question', 'Answer']);
-    const cards = ref([['', '']]);
+    const cards = ref([[{content: '', type: 'none'}, {content: '', type: 'none'}]]);
 
     const onHoverDelBtn = ref([false, false]);
+
+    if (await user.get_jwt() === 'no token') {
+        router.push({ path: '/login', query: {o: 'create'} });
+    }
 
 
     function addRow() {
         var newRow = []
 
         for (let i = 0; i < chart_columns_name.value.length; i++) {
-            newRow.push('');
+            newRow.push({content: '', type: 'none'});
         }
 
         cards.value.push(newRow);
@@ -36,7 +34,7 @@
         chart_columns_name.value.push('');
 
         cards.value.forEach(element => {
-            element.push('');
+            element.push({content: '', type: 'none'});
         });
     }
 
@@ -73,7 +71,7 @@
             .then(response => {
                 switch(response.status) {
                     case 201:
-                        router.push({ path: '/' });
+                        router.push({ path: '/home' });
                         break;
 
                     case 404:
@@ -122,7 +120,12 @@
                             <div class="delBtnDel" v-if="onHoverDelBtn[cards.indexOf(card)]"><img src="../assets/icons/icons8-delete.svg" alt="delete this card"></div>
                         </div>
                         <div class="cell" v-for="cell in cards[cards.indexOf(card)]">
-                            <input type="text" name="" v-model="cards[cards.indexOf(card)][card.indexOf(cell)]" id="">
+                            <input v-if="cards[cards.indexOf(card)][card.indexOf(cell)].type === 'text'" type="text" name="" v-model="cards[cards.indexOf(card)][card.indexOf(cell)].content" class="txtInput">
+                            <math-field contenteditable="true" class="mathInput" v-if="cards[cards.indexOf(card)][card.indexOf(cell)].type === 'equation'">{{ cell.content }}</math-field>
+                            <div class="cellBtnContainer" v-if="cards[cards.indexOf(card)][card.indexOf(cell)].type === 'none'">
+                                <button @click="cards[cards.indexOf(card)][card.indexOf(cell)].type = 'text'">text</button>
+                                <button @click="cards[cards.indexOf(card)][card.indexOf(cell)].type = 'equation'">f(x)</button>
+                            </div>
                         </div>
                     </div>
                     <div id="addRowBtn" @click="addRow()">+</div>
@@ -131,7 +134,7 @@
                 <span>Mark equations with "#LaTeX" at the beginning.</span>
             </div>           
             <div class="btnContainer">
-                <div class="btn" id="cancelBtn" @click="router.push({ path: '/' })"><span>Cancel</span></div>
+                <div class="btn" id="cancelBtn" @click="router.push({ path: '/home' })"><span>Cancel</span></div>
                 <div class="btn" id="CreateBtn" @click="createDeck()"><span>Create</span></div>
             </div>
         </div>
@@ -288,5 +291,20 @@
         flex-direction: row;
     }
 
+    .txtInput {
+        height: 32px;
+        width: 166.5px;
+        padding: 0;
+    }
+
+    .mathInput {
+        height: fit-content;
+        width: 168.5px;
+        padding: 0;
+    }
+
+    .cellBtnContainer {
+        
+    }
 
 </style>

@@ -47,7 +47,8 @@ export const useUserStore = defineStore('user', {
                 const response = await fetch(import.meta.env.VITE_API + 'user/refresh_token', request);
 
                 if (response.status !== 200) {
-                    return 0;
+
+                    return 'no token';
                 }
 
                 const data = await response.json();
