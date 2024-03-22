@@ -1,10 +1,11 @@
 <script setup>
     import { ref } from 'vue';
     import { useUserStore } from '../store/user';
-    import { useRouter } from 'vue-router';
+    import { useRouter, useRoute } from 'vue-router';
     import jwt_decode from "jwt-decode";
 
     const router = useRouter();
+    const route = useRoute();
     const user = useUserStore();
 
 
@@ -60,9 +61,16 @@
                     if (data) {
                         user.setJWT(data.token);
                         const jwtData = jwt_decode(data.token);
-                        user.setUser(jwtData._id, jwtData.username, jwtData.email, jwtData.version);
+                        user.setUser(jwtData._id, jwtData.username, jwtData.email, jwtData.version, jwtData.profilePicture);
 
-                        router.go(-1);
+                        if (route.query.o === '' || route.query.o === undefined) {
+                            router.push({path: '/home'});
+                        } else if (route.query.d) {
+                            router.push({path: '/' + route.query.o, query: {d: route.query.d}});
+                        } else {
+                            router.push({path: '/' + route.query.o});
+                        }
+                        
                     }
                 })
             .catch(err => {
@@ -83,12 +91,12 @@
                 <div class="sign_up_form_control">
                     <input type="password" name="password" placeholder="Password" autocomplete="current-password" v-model="password">
                     <p class="p_error">{{ passwordErr }}</p>
-                    <a href="https://sunaarisu.de/wip.php">Forgot Password</a>
+                    <!-- <a href="https://sunaarisu.de/wip.php">Forgot Password</a> -->
                 </div>
                 <button class="sign_up_btn" type="submit" name="submit"><strong>Login</strong></button>
             </form>
             <div class="form_footer">
-                <RouterLink to="/signup"><p>Dont't have an account yet?</p></RouterLink>
+                <RouterLink :to="{path: '/signup', query: route.query}"><p>Dont't have an account yet?</p></RouterLink>
                 <a href="https://sunaarisu.de/privacy">Privacy</a>
             </div>
         </div>        

@@ -12,9 +12,11 @@
         deckInfo: Object
     });
 
-    const cardCount = ref(props.deckInfo.deckSettings.cards_per_stack);
-    const cardCountCheckbox = ref(cardCount.value === props.deckInfo.deckInfo.card_count);
-    const randomizeCheckbox = ref(props.deckInfo.deckSettings.randomize);
+    console.log(props.deckInfo.deck_settings.chart_definition);
+
+    const cardCount = ref(props.deckInfo.deck_settings.cards_per_stack);
+    const cardCountCheckbox = ref(cardCount.value === props.deckInfo.deck_settings.card_count);
+    const randomizeCheckbox = ref(props.deckInfo.deck_settings.randomize);
     const questionSelect = ref('ALL');
     const answerSelect = ref(['REMAINING']);
 
@@ -23,7 +25,7 @@
 
     async function updateDeck() {
         if (cardCountCheckbox.value) {
-            cardCount.value = props.deckInfo.deckInfo.card_count;
+            cardCount.value = props.deckInfo.deck_settings.card_count;
         };
 
         const request = {
@@ -76,11 +78,11 @@
         };
 
         if (cardCountCheckbox.value) {
-            query.cardCount = props.deckInfo.deckInfo.card_count;
+            query.cardCount = props.deckInfo.deck_settings.card_count;
         };
 
         router.push({ 
-            path: '/deck/' + props.deckInfo._id,
+            path: '/deck/' + props.deckInfo.id,
             query: query
         });
     }
@@ -94,13 +96,13 @@
         };
 
         if (cardCountCheckbox.value) {
-            query.cardCount = props.deckInfo.deckInfo.card_count;
+            query.cardCount = props.deckInfo.deck_settings.card_count;
         };
 
-        decks.setNewStackSession(props.deckInfo._id, query);
+        decks.setNewStackSession(props.deckInfo.id, query);
 
         router.push({
-            path: '/deck/' + props.deckInfo._id
+            path: '/deck/' + props.deckInfo.id
         })
     }
 
@@ -109,7 +111,7 @@
 <template>
     <div id="stackSettingsContainer">
         <div id="deckTitle">
-            <span id="title">{{ deckInfo.deckInfo.title }}</span>
+            <span id="title">{{ deckInfo.title }}</span>
             <span>Stack creation settings</span>
         </div>
         <div class="seperator">ㅤ</div>
@@ -132,7 +134,7 @@
                 <div class="cardLayoutInputContainer">
                     <select name="question" id="questionSelect" v-model="questionSelect">
                         <option value="ALL">all</option>
-                        <option :value="element" v-for="element in deckInfo.deckInfo.chartDefinition.chart_columns_name">{{ element }}</option>
+                        <option :value="element" v-for="element in deckInfo.deck_settings.chart_definition.chart_columns_names">{{ element }}</option>
                     </select>
                 </div>
             </div>
@@ -141,10 +143,10 @@
                     <div class="cardLayoutInputContainer">
                         <select name="answer" id="answerSelect" v-model="answerSelect[0]">
                             <option value="REMAINING">all remaining</option>
-                            <option :value="element" v-for="element in deckInfo.deckInfo.chartDefinition.chart_columns_name">{{ element }}</option>
+                            <option :value="element" v-for="element in deckInfo.deck_settings.chart_definition.chart_columns_names">{{ element }}</option>
                         </select>
                         <select name="" id="" v-if="answerSelect[0] !== 'REMAINING'" v-model="answerSelect[1]">
-                            <option :value="element" v-for="element in deckInfo.deckInfo.chartDefinition.chart_columns_name">{{ element }}</option>
+                            <option :value="element" v-for="element in deckInfo.deck_settings.chart_definition.chart_columns_names">{{ element }}</option>
                         </select>
                     </div>
                     

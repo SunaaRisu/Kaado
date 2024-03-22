@@ -6,20 +6,23 @@
     const router = useRouter();
     const user = useUserStore();
 
-
     const title = ref();
     const description = ref();
     const chart_columns_name = ref(['Question', 'Answer']);
-    const cards = ref([['', '']]);
+    const cards = ref([[{content: '', type: 'none'}, {content: '', type: 'none'}]]);
 
     const onHoverDelBtn = ref([false, false]);
+
+    if (await user.get_jwt() === 'no token') {
+        router.push({ path: '/login', query: {o: 'create'} });
+    }
 
 
     function addRow() {
         var newRow = []
 
         for (let i = 0; i < chart_columns_name.value.length; i++) {
-            newRow.push('');
+            newRow.push({content: '', type: 'none'});
         }
 
         cards.value.push(newRow);
@@ -31,7 +34,7 @@
         chart_columns_name.value.push('');
 
         cards.value.forEach(element => {
-            element.push('');
+            element.push({content: '', type: 'none'});
         });
     }
 
@@ -43,10 +46,17 @@
     async function createDeck() {
         var tempcards = [];
 
-        cards.value.forEach(element => {
+        cards.value.forEach(card => {
+
+            card.forEach(element => {
+                if (element.type === 'none') {
+                    element.type = 'text';
+                }
+            })
+
             tempcards.push({
-                cardNumber: cards.value.indexOf(element) + 1,
-                cardContent: element
+                cardNumber: cards.value.indexOf(card) + 1,
+                cardContent: card
             })
         });
 
@@ -68,7 +78,7 @@
             .then(response => {
                 switch(response.status) {
                     case 201:
-                        router.push({ path: '/' });
+                        router.push({ path: '/home' });
                         break;
 
                     case 404:
@@ -117,19 +127,23 @@
                             <div class="delBtnDel" v-if="onHoverDelBtn[cards.indexOf(card)]"><img src="../assets/icons/icons8-delete.svg" alt="delete this card"></div>
                         </div>
                         <div class="cell" v-for="cell in cards[cards.indexOf(card)]">
-                            <input type="text" name="" v-model="cards[cards.indexOf(card)][card.indexOf(cell)]" id="">
+                            <input v-if="cards[cards.indexOf(card)][card.indexOf(cell)].type === 'text'" type="text" name="" v-model="cards[cards.indexOf(card)][card.indexOf(cell)].content" class="txtInput">
+                            <math-field contenteditable="true" class="mathInput" v-if="cards[cards.indexOf(card)][card.indexOf(cell)].type === 'equation'" v-model="cards[cards.indexOf(card)][card.indexOf(cell)].content">{{ cell.content }}</math-field>
+                            <div class="cellBtnContainer" v-if="cards[cards.indexOf(card)][card.indexOf(cell)].type === 'none'">
+                                <button @click="cards[cards.indexOf(card)][card.indexOf(cell)].type = 'text'">text</button>
+                                <button @click="cards[cards.indexOf(card)][card.indexOf(cell)].type = 'equation'">f(x)</button>
+                            </div>
                         </div>
                     </div>
                     <div id="addRowBtn" @click="addRow()">+</div>
                 </div>
-                <span>Use LaTeX syntax for equations.</span>
-                <span>Mark equations with "#LaTeX" at the beginning.</span>
             </div>           
             <div class="btnContainer">
-                <div class="btn" id="cancelBtn" @click="router.push({ path: '/' })"><span>Cancel</span></div>
+                <div class="btn" id="cancelBtn" @click="router.push({ path: '/home' })"><span>Cancel</span></div>
                 <div class="btn" id="CreateBtn" @click="createDeck()"><span>Create</span></div>
             </div>
         </div>
+        <a id="privacy" href="https://sunaarisu.de/privacy">Privacy</a>
     </main>
 </template>
 
@@ -223,16 +237,24 @@
     }
 
     .columnNaming {
-        margin-left: 25px;
+        margin-left: 37.8px;
         
         display: flex;
         flex-direction: row;
-        flex-wrap: nowrap;
+    }
+
+    .columnNaming input {
+        height: fit-content;
+        min-height: 36px;
+        width: 170px;
+        padding: 0 5px 0 5px;
+        border: 1px solid black;
+        flex-shrink: 0;
     }
 
     #addColumnBtn {
-        height: 25px;
-        width: 25px;
+        height: 37.8px;
+        width: 37.8px;
         background-color: var(--rk-c-verdigris);
 
         display: flex;
@@ -241,12 +263,14 @@
         
         font-size: larger;
         font-weight: bolder;
+
+        flex-shrink: 0;
     }
 
     #addRowBtn {
-        height: 25px;
-        width: calc(100% - 50px);
-        margin-left: 25px;
+        height: 37.8px;
+        width: calc(100% - (2 * 37.8px));
+        margin-left: 37.8px;
         background-color: var(--rk-c-verdigris);
 
         display: flex;
@@ -258,8 +282,8 @@
     }
 
     .delBtnNumber {
-        height: 25px;
-        width: 25px;
+        height: 37.8px;
+        width: 37.8px;
         background-color: var(--rk-c-verdigris);
 
         display: flex;
@@ -269,8 +293,8 @@
     }
 
     .delBtnDel {
-        height: 25px;
-        width: 25px;
+        height: 37.8px;
+        width: 37.8px;
         background-color: var(--rk-c-red);
 
         display: flex;
@@ -283,5 +307,46 @@
         flex-direction: row;
     }
 
+    .txtInput {
+        height: fit-content;
+        min-height: 36px;
+        width: 170px;
+        padding: 0 5px 0 5px;
+        border: 1px solid black;
+    }
+
+    .mathInput {
+        height: fit-content;
+        min-height: 36px;
+        width: 170px;
+        padding: 0 5px 0 5px;
+        border: 1px solid black;
+    }
+
+    .cellBtnContainer {
+        height: fit-content;
+        min-height: 36px;
+        width: 180px;
+        margin: 0 2px 0 0;
+
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .cellBtnContainer button{
+        width: 48%;
+        height: 30px;
+        border: 1px solid black;
+    }
+
+    #privacy {
+        position: fixed;
+        left: 10px;
+        bottom: 10px;
+        text-decoration: none;
+        color: var(--color-text-light);
+    }
 
 </style>

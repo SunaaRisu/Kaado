@@ -8,15 +8,15 @@
     });
 
     function openDeck(){
-        router.push({ path: '/deck/' + props.deckInfo._id }); // redirect to /deck/(deck id)
+        router.push({ path: '/deck/' + props.deckInfo.id }); // redirect to /deck/(deck id)
     }
 
 </script>
 
 <template>
     <div class="deckPreviewContainer" @click="openDeck()">
-        <span>{{ deckInfo.deckInfo.title }}</span>
-        <span>Cards: {{ deckInfo.deckInfo.card_count }}</span>
+        <span>{{ deckInfo.title }}</span>
+        <span>Cards: {{ deckInfo.card_count }}</span>
     </div>
 </template>
 

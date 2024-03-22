@@ -4,6 +4,7 @@
     import { useRouter } from 'vue-router';
     import { onClickOutside } from '@vueuse/core'
     import deckPreview from '../components/deckPreview.vue';
+    import deckPreviewLoading from '../components/deckProviewLoading.vue';
     import stackCreationSettings from '../components/stackCreationSettings.vue';
     import userMenu from '../components/userMenu.vue';
 
@@ -19,15 +20,23 @@
     const stackSettingsRef = ref(null);
     const deckInfoSettings = ref();
 
+    const fetchFinished = ref(false);
+
     onClickOutside(stackSettingsRef, () => {renderStackSettings.value = false});
-    
+
+    const jwt = await user.get_jwt();
+
+    if (jwt === 'no token') {
+        router.push({ path: '/login', query: {o: 'home'} });
+    }
+
     const request = {
         method: 'GET',
         credentials: 'include',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'Authorization': 'Bearer ' + await user.get_jwt() }
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'Authorization': 'Bearer ' + jwt }
     }
 
-    fetch(import.meta.env.VITE_API + 'deck/get_deck_list', request)
+    fetch(import.meta.env.VITE_API + 'user/get_deck_list', request)
         .then(response => {
             switch (response.status) {
                 case 200:
@@ -46,6 +55,7 @@
         })
         .then(data => {
             decks.value = data;
+            fetchFinished.value = true;
         })
         .catch(err => {
             console.log(err)
@@ -68,20 +78,24 @@
         deckInfoSettings.value = deck;
         renderStackSettings.value = true;
     }
-
 </script>
 
 <template>
     <main>
-        <div id="accountBtn" @click="accountBtnOnClick()"><span>{{ btnTxt }}</span></div>
+        <div id="accountBtn" @click="accountBtnOnClick()">
+            <span>{{ btnTxt }}</span>
+            <img id="profilePicture" :src="user.$state.user.profilePicture" alt="profil picture" v-if="btnTxt !== 'Login' && user.$state.user.profilePicture !== ''">
+            <img src="https://srcsrv.sunaarisu.de/kaado/noPP.png" alt="profil picture" v-if="btnTxt !== 'Login' && user.$state.user.profilePicture === ''">
+        </div>
         <userMenu v-if="renderUserMenu"/>
         <div id="deckPreviewContainer">
-            <deckPreview @contextmenu.prevent="renderStackSettingsFun(deck)" v-for="deck in decks.decks" :deckInfo="deck"/>
-            <div id="addDeckBtn" @click="router.push({ path: '/create' })">Add a Deck</div>
+            <deckPreviewLoading v-if="!fetchFinished"></deckPreviewLoading>
+            <deckPreview v-if="fetchFinished" @contextmenu.prevent="renderStackSettingsFun(deck)" v-for="deck in decks.deck_list" :deckInfo="deck"/>
+            <div v-if="fetchFinished" id="addDeckBtn" @click="router.push({ path: '/marketplace' })">Add a Deck</div>
         </div>  
         <stackCreationSettings v-if="renderStackSettings" ref="stackSettingsRef" :deckInfo="deckInfoSettings" />
         <h1>{{ infoTxt }}</h1>
-        <a href="https://sunaarisu.de/privacy">Privacy</a>      
+        <a id="privacy" href="https://sunaarisu.de/privacy">Privacy</a>      
     </main>    
 </template>
 
@@ -99,7 +113,7 @@
         padding-right: 10px;
 
         display: flex;
-        flex-direction: column;
+        flex-direction: row;
         justify-content: center;
         align-items: center;
     }
@@ -108,6 +122,13 @@
         color: var(--color-text-light);
         font-size: larger;
         font-weight: 700;
+    }
+
+    #accountBtn img {
+        margin-left: 10px;
+        height: 40px;
+        width: 40px;
+        border-radius: 50%;
     }
 
     #deckPreviewContainer {        
@@ -129,7 +150,7 @@
         color: var(--color-text-light);
     }
     
-    a {
+    #privacy {
         position: fixed;
         left: 10px;
         bottom: 10px;

@@ -6,7 +6,7 @@
     import { useUserStore } from '../store/user';
     import { useDecksStore } from '../store/decks';
     import { onKeyStroke } from '@vueuse/core';
-import { MathfieldElement } from 'mathlive';
+    import { MathfieldElement } from 'mathlive';
 
     const route = useRoute();
     const router = useRouter();
@@ -38,8 +38,6 @@ import { MathfieldElement } from 'mathlive';
     const cardCount = ref(10);
     const questionSetting = ref('ALL');
     const answerSetting = ref('REMAINING');    
-
-    const equationArr = ref([]);
     
 
     // Fetches the deck with the id from the route and sets "deck" equal to it.
@@ -47,7 +45,7 @@ import { MathfieldElement } from 'mathlive';
         const request = {
             method: 'POST',
             credentials: 'include',
-            headers: {'Content-Type': 'application/json', 'Accept': 'application/json', 'Authorization': 'Bearer ' + await user.get_jwt() },
+            headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
             body: JSON.stringify({ _id: route.params.id })
         }
 
@@ -154,8 +152,6 @@ import { MathfieldElement } from 'mathlive';
         cardAnswered.value = false;
         finished.value = false;
         failedCards.value = [];
-
-        checkForEquations();
     }
 
     // Shows the Answer or increases "currentCard" by 1 based on "cardAnswered". If the stack is finished it displays the menu.
@@ -168,7 +164,6 @@ import { MathfieldElement } from 'mathlive';
 
             if (currentCard.value < stack.value.length - 1) {
                 currentCard.value++;
-                checkForEquations();
             }else{
                 finished.value = true;
                 showConfetti();
@@ -179,26 +174,6 @@ import { MathfieldElement } from 'mathlive';
                 }
             }
         }        
-    }
-
-    function checkForEquations(){
-        if (stack.value[currentCard.value].q.includes('#LaTeX')) {
-            stack.value[currentCard.value].q = stack.value[currentCard.value].q.replace('#LaTeX', '');
-            equationArr.value = [true];
-        } else {
-            equationArr.value = [false];
-        }
-
-        stack.value[currentCard.value].a.forEach(element => {
-            if (element.includes('#LaTeX')) {
-                stack.value[currentCard.value].a[stack.value[currentCard.value].a.indexOf(element)] = element.replace('#LaTeX', '');
-                equationArr.value.push(true);
-            } else {
-                equationArr.value.push(false);
-            }
-        });
-
-        console.log(equationArr.value);
     }
 
     // Pushes current card to "failedCards" and puts the card back into the next 10 cards of the current stack.
@@ -271,17 +246,17 @@ import { MathfieldElement } from 'mathlive';
         <span id="title" v-if="!finished">{{ deck.deck.deck_info.title }}</span>
 
         <div class="card" id="card" v-if="!finished" @click="showAnswerOrNextCard()">
-            <span v-if="!equationArr[0]">{{ stack[currentCard].q }}</span>
-            <math-field class="math" read-only v-if="equationArr[0]">{{ stack[currentCard].q }}</math-field>
+            <span v-if="stack[currentCard].q.type === 'text'">{{ stack[currentCard].q.content }}</span>
+            <math-field class="math" read-only v-if="stack[currentCard].q.type === 'equation'">{{ stack[currentCard].q.content }}</math-field>
             <div id="answer" v-if="cardAnswered">
                 <div class="answerContainer" v-if="!Array.isArray(stack[currentCard].a)">
-                    <span v-if="!equationArr[1]">{{ stack[currentCard].a }}</span>
-                    <math-field class="math" read-only v-if="equationArr[1]">{{ stack[currentCard].a }}</math-field>
+                    <span v-if="stack[currentCard].a.type === 'text'">{{ stack[currentCard].a.content }}</span>
+                    <math-field class="math" read-only v-if="stack[currentCard].a.type === 'equation'">{{ stack[currentCard].a.content }}</math-field>
                     <span>single</span>
                 </div>
                 <div class="answerArrayContainer" v-for="element in stack[currentCard].a.length" v-if="Array.isArray(stack[currentCard].a)">
-                    <span v-if="!equationArr[element]">{{ stack[currentCard].a[element - 1] }}</span>
-                    <math-field class="math" read-only v-if="equationArr[element]">{{ stack[currentCard].a[element - 1] }}</math-field>
+                    <span v-if="stack[currentCard].a[element - 1].type === 'text'">{{ stack[currentCard].a[element - 1].content }}</span>
+                    <math-field class="math" read-only v-if="stack[currentCard].a[element - 1].type === 'equation'">{{ stack[currentCard].a[element - 1].content }}</math-field>
                 </div>                
             </div>          
         </div>
@@ -291,7 +266,7 @@ import { MathfieldElement } from 'mathlive';
             <span id="menuSubtitle">{{ deck.deck.title }}</span>
             <button class="menuBtn" id="repeatDeck" @click="createStackAndStart()"><strong>REPEAT DECK</strong></button>
             <button class="menuBtn" id="repeatFailedCards" @click="repeatFailedCards()" :disabled="!haveFailedCards"><strong>REPEAT THE {{ failedCards.length }} FAILED CARDS</strong></button>
-            <button class="menuBtn" id="backToSelection" @click="router.push({ path: '/'})"><strong>BACK TO DECK SELECTION</strong></button>
+            <button class="menuBtn" id="backToSelection" @click="router.push({ path: '/home'})"><strong>BACK TO DECK SELECTION</strong></button>
         </div>
 
         <div id="btnContainer" v-if="cardAnswered && !finished">
@@ -310,6 +285,7 @@ import { MathfieldElement } from 'mathlive';
             </div>
             <div id="progressBarFill" :style="{'width': ((currentCard + 1) / stack.length) * 100 + '%'}"></div>
         </div>
+        <a id="privacy" href="https://sunaarisu.de/privacy">Privacy</a>
     </main>    
 </template>
 
@@ -476,5 +452,13 @@ import { MathfieldElement } from 'mathlive';
         border: none;
         font-size: larger;
         font-weight: bolder;
+    }
+
+    #privacy {
+        position: fixed;
+        left: 10px;
+        bottom: 10px;
+        text-decoration: none;
+        color: var(--color-text-light);
     }
 </style>
