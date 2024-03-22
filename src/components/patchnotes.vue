@@ -5,7 +5,7 @@
     const emit = defineEmits(['response']);
 
     const renderNewFeatures = ref(true); 
-    const renderFixedIssues = ref(false);
+    const renderFixedIssues = ref(true);
     const renderKnownIssues = ref(true);
 </script>
 
@@ -19,21 +19,22 @@
         <div class="seperator" id="newSeperator" v-if="renderNewFeatures"><span class="seperatorTitle">New Features</span></div>
         <div class="textContainer" id="newText" v-if="renderNewFeatures">
             <ul>
-                <li>You can now create your own decks. :3</li>
-                <li>Added support for equations using LaTeX.</li>
                 <li>Right-clicking on a deck preview card opens a settings window where you can choose how the stack is created.</li>
-            </ul>            
+                <li>Marketplace where you can browse decks created by other users and add them to your own list.</li>
+                <li>"Landing" page and "Home" page are now separate pages.</li>
+                <li>Access to parts of the app for which you do not need an account can now be used without registering.</li>
+            </ul>     
         </div>
         <div class="seperator" id="fixedSeperator" v-if="renderFixedIssues"><span class="seperatorTitle" >Fixed Issues</span></div>
         <div class="textContainer" id="fixedText" v-if="renderFixedIssues">
             <ul>
-                <li></li>
+                <li>Redirect after login and signup should work now.</li>
+                <li>Better support for equations.</li>
             </ul>
         </div>
         <div class="seperator" id="knownSeperator" v-if="renderKnownIssues"><span class="seperatorTitle">Known Issues</span></div>
         <div class="textContainer" id="knownText" v-if="renderKnownIssues">
             <ul>
-                <li>Redirect after login and signup does not work everytime.</li>
                 <li>The deck content table sometimes writes to incorrect cells during deck creation.</li>
             </ul>
         </div>

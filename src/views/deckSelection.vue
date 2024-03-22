@@ -95,7 +95,7 @@
         </div>  
         <stackCreationSettings v-if="renderStackSettings" ref="stackSettingsRef" :deckInfo="deckInfoSettings" />
         <h1>{{ infoTxt }}</h1>
-        <a href="https://sunaarisu.de/privacy">Privacy</a>      
+        <a id="privacy" href="https://sunaarisu.de/privacy">Privacy</a>      
     </main>    
 </template>
 
@@ -150,7 +150,7 @@
         color: var(--color-text-light);
     }
     
-    a {
+    #privacy {
         position: fixed;
         left: 10px;
         bottom: 10px;

@@ -66,7 +66,7 @@
                         if (route.query.o === '' || route.query.o === undefined) {
                             router.push({path: '/home'});
                         } else if (route.query.d) {
-                            router.push({path: '/' + route.query.o + '/' + route.query.d});
+                            router.push({path: '/' + route.query.o, query: {d: route.query.d}});
                         } else {
                             router.push({path: '/' + route.query.o});
                         }
@@ -91,7 +91,7 @@
                 <div class="sign_up_form_control">
                     <input type="password" name="password" placeholder="Password" autocomplete="current-password" v-model="password">
                     <p class="p_error">{{ passwordErr }}</p>
-                    <a href="https://sunaarisu.de/wip.php">Forgot Password</a>
+                    <!-- <a href="https://sunaarisu.de/wip.php">Forgot Password</a> -->
                 </div>
                 <button class="sign_up_btn" type="submit" name="submit"><strong>Login</strong></button>
             </form>

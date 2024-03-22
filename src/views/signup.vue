@@ -134,8 +134,11 @@
                             const jwtData = jwt_decode(data.token);
                             user.setUser(jwtData._id, jwtData.username, jwtData.email, jwtData.version);
 
+
                             if (route.query.o === '' || route.query.o === undefined) {
                                 router.push({path: '/home'});
+                            } else if (route.query.d) {
+                                router.push({path: '/' + route.query.o, query: {d: route.query.d}});
                             } else {
                                 router.push({path: '/' + route.query.o});
                             }

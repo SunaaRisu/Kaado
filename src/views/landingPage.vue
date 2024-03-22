@@ -1,9 +1,13 @@
 <script setup>
-    import { ref, onMounted } from 'vue'
+    import { ref, onMounted } from 'vue';
+    import { useRouter } from 'vue-router';
+
+    const router = useRouter();
 
     const inputHint = ref(null)
-    const list = ["banane", "apfel", "asdfoeaskdfjaoesdfjaoes", "who's joe?", "Paul stinkt!"];
+    const list = ["Seach a deck", "Search something", "Find something interesting", "Minna no Nihongo Vocabulary", "ABI 2016", "ABI BW", "BP 2016", "Elektrisches Feld", "Schwingung", "Quantenphysik", "Wellenoptik" ];
     var first = true;
+    const searchQuery = ref('');
 
     onMounted(() => {
         draw();
@@ -47,28 +51,66 @@
 </script>
 
 <template>
-    <div id="homeMainContainer">
-            <form action="https://filesharing.sunaarisu.de/wip.php" method="get">
-            <input ref="inputHint" id="input" class="searchbar" type="text" name="s" placeholder="Suche einen Eintrag" required autocomplete="off">
-        </form>
+    <main>
+        <button id="loginBtn" @click="router.push( {path: '/login' })">
+            <strong>
+                Login
+            </strong>
+        </button>
 
-        <div class="seperator"></div>
+        <div id="homeMainContainer">
+            <form @submit.prevent="router.push( {path: '/marketplace', query: {s: searchQuery}} )">
+                <input ref="inputHint" id="input" class="searchbar" type="text" name="s" placeholder="Search something" required autocomplete="off" v-model="searchQuery">
+            </form>
+    
+            <button class="btn" @click="router.push({ path: '/marketplace' })">
+                <strong>
+                    Browse
+                </strong>
+            </button>
 
-        <a id="btnA" href="https://filesharing.sunaarisu.de/wip.php">
-            <div class="btn">
-                <strong>Stöbern</strong>
-            </div>
-        </a>
-        <a id="btnA" href="https://filesharing.sunaarisu.de/wip.php">
-            <div class="btn">
-                <strong>Eintrag erstellen</strong>
-            </div>
-        </a>
-    </div>
+            <button class="btn" @click="router.push({ path: '/create'})">
+                <strong>
+                    Create own deck
+                </strong>
+            </button>
+        </div>
+        <a id="privacy" href="https://sunaarisu.de/privacy">Privacy</a>
+    </main>
 
 </template>
 
 <style scoped>
+    main{
+        height: 100vh;
+        width: 100vw;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    #loginBtn {
+        background-color: var(--rk-c-robin_egg_blue);
+        border-radius: 10px;
+        width: 187px;
+        height: 50px;
+        margin: 10px 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        outline: none;
+        border: none;
+
+        position: absolute;
+        top: 0px;
+        right: 10px;
+    }
+
+    #loginBtn strong {
+        font-size: larger;
+        font-weight: bolder;
+    }
+
     #homeMainContainer{
         margin: auto;
         width: 350px;
@@ -79,4 +121,42 @@
         align-content: center;
         flex-direction: column;
     }  
+
+    .searchbar {
+        width: 300px;
+        height: 50px;
+        border-radius: 10px;
+        border: none;
+        background-color: white;
+        color: var(--color-text);
+        font-size: 20px;
+        text-align: center;
+        margin: 10px 0;
+    }
+
+    .btn {
+        background-color: var(--rk-c-robin_egg_blue);
+        border-radius: 10px;
+        width: 300px;
+        height: 50px;
+        margin: 10px 0;
+        display: flex;
+        align-content: center;
+        justify-content: center;
+        flex-direction: column;
+        flex-wrap: wrap;
+    }
+
+    .btn strong {
+        font-size: larger;
+        font-weight: bolder;
+    }
+
+    #privacy {
+        position: fixed;
+        left: 10px;
+        bottom: 10px;
+        text-decoration: none;
+        color: var(--color-text-light);
+    }
 </style>

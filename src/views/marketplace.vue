@@ -1,12 +1,14 @@
 <script setup>
     import { ref } from 'vue';
-    import { useRouter } from 'vue-router';
+    import { useRouter, useRoute } from 'vue-router';
     import { useUserStore } from '../store/user';    
 
     import marketplaceDeckPreview from '../components/marketplaceDeckPreview.vue';
     import marketplaceDeckProviewLoading from '../components/marketplaceDeckProviewLoading.vue';
+    import deckInfoView from '../components/deckInfo.vue';
 
     const router = useRouter();
+    const route = useRoute();
     const user = useUserStore();
 
     const addedDecks = ref([]);
@@ -14,6 +16,9 @@
     const fetchFinished = ref(false);
     const infoTxt = ref();
 
+    const searchParameter = ref((route.query.s === undefined) ? undefined : route.query.s);
+
+    const renderInfo = ref(false);
       
     const request_addedDecks = {
         method: 'GET',
@@ -21,13 +26,12 @@
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'Authorization': 'Bearer ' + await user.get_jwt() }
     }
 
-    fetch(import.meta.env.VITE_API + 'user/get_deck_list', request_addedDecks)
+    await fetch(import.meta.env.VITE_API + 'user/get_deck_list', request_addedDecks)
         .then(response => {
             switch (response.status) {
                 case 200:
                     infoTxt.value = '';
                     return response.json(); 
-                    break;
                 
                 case 500:
                     infoTxt.value = 'Something went wrong. :( Try refreshing the page.';
@@ -47,38 +51,53 @@
             console.log(err)
             infoTxt.value = 'Something went wrong. :( Try refreshing the page.';
         });
+    
+    async function search(){
+        router.push({path: '/marketplace', query: {s: (searchParameter.value === '') ? undefined : searchParameter.value, d: (route.query.d === undefined ? undefined : route.query.d)} });
 
-    const request_decks = {
-        method: 'GET',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'Authorization': 'Bearer ' + await user.get_jwt() }
+        const request_decks = {
+            method: 'POST',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'Authorization': 'Bearer ' + await user.get_jwt() },
+            body: JSON.stringify({ searchQuery: searchParameter.value })
+        }
+
+        fetch(import.meta.env.VITE_API + 'deck/get_deck_list', request_decks)
+            .then(response => {
+                switch (response.status) {
+                    case 200:
+                        infoTxt.value = '';
+                        return response.json();
+                    
+                    case 500:
+                        infoTxt.value = 'Something went wrong. :( Try refreshing the page.';
+                        break;
+                
+                    default:
+                        infoTxt.value = 'Something went wrong. :( Try refreshing the page.';
+                        break;
+                };
+            })
+            .then(data => {
+                decks.value = data.decks;
+                fetchFinished.value = true;
+            })
+            .catch(err => {
+                console.log(err)
+                infoTxt.value = 'Something went wrong. :( Try refreshing the page.';
+            });
     }
 
-    fetch(import.meta.env.VITE_API + 'deck/get_deck_list', request_decks)
-        .then(response => {
-            switch (response.status) {
-                case 200:
-                    infoTxt.value = '';
-                    return response.json(); 
-                    break;
-                
-                case 500:
-                    infoTxt.value = 'Something went wrong. :( Try refreshing the page.';
-                    break;
-            
-                default:
-                    infoTxt.value = 'Something went wrong. :( Try refreshing the page.';
-                    break;
-            };
-        })
-        .then(data => {
-            decks.value = data.decks;
-            fetchFinished.value = true;
-        })
-        .catch(err => {
-            console.log(err)
-            infoTxt.value = 'Something went wrong. :( Try refreshing the page.';
-        });
+    if (route.query.d !== undefined) {
+        renderInfo.value = true;
+    }
+
+    function closeDeckInfo(){
+        renderInfo.value = false;
+        router.push({ path: '/marketplace', query: {s: (route.query.s === undefined ? undefined : route.query.s)}});
+    }
+
+    search();
 </script>
 
 <template>
@@ -87,13 +106,18 @@
             <div class="tab" id="createTab" @click="router.push({ path: '/create' })"><span>Create new deck</span></div>
             <div class="tab" id="addTab"><span>Add deck from the marketplace</span></div>
         </div>
-        <div id="pageContainer">            
-            <input type="text" name="search" id="search" placeholder="Search a deck">
-            <button id="searchBtn">SSS</button>
+        <div id="pageContainer">      
+            <form @submit.prevent="$event => search()">
+                <input v-model="searchParameter" type="text" name="search" id="search" placeholder="Search a deck">
+                <button id="searchBtn">SSS</button>
+            </form>      
             <marketplaceDeckPreview v-if="fetchFinished" v-for="deck in decks" :deckInfo="deck" :addedDecks="addedDecks"></marketplaceDeckPreview>
             <marketplaceDeckProviewLoading v-if="!fetchFinished"></marketplaceDeckProviewLoading>
         </div>
+        <a id="privacy" href="https://sunaarisu.de/privacy">Privacy</a>
     </main>
+    <deckInfoView v-if="renderInfo" @response="closeDeckInfo()" :id="route.query.d" :addedDecks="addedDecks"/>
+    
 </template>
 
 <style scoped>
@@ -171,4 +195,11 @@
         flex-direction: column;
     }
 
+    #privacy {
+        position: fixed;
+        left: 10px;
+        bottom: 10px;
+        text-decoration: none;
+        color: var(--color-text-light);
+    }
 </style>

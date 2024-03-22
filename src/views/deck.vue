@@ -38,8 +38,6 @@
     const cardCount = ref(10);
     const questionSetting = ref('ALL');
     const answerSetting = ref('REMAINING');    
-
-    const equationArr = ref([]);
     
 
     // Fetches the deck with the id from the route and sets "deck" equal to it.
@@ -248,17 +246,17 @@
         <span id="title" v-if="!finished">{{ deck.deck.deck_info.title }}</span>
 
         <div class="card" id="card" v-if="!finished" @click="showAnswerOrNextCard()">
-            <span v-if="!stack[currentCard].q.equation">{{ stack[currentCard].q.content }}</span>
-            <math-field class="math" read-only v-if="stack[currentCard].q.equation">{{ stack[currentCard].q.content }}</math-field>
+            <span v-if="stack[currentCard].q.type === 'text'">{{ stack[currentCard].q.content }}</span>
+            <math-field class="math" read-only v-if="stack[currentCard].q.type === 'equation'">{{ stack[currentCard].q.content }}</math-field>
             <div id="answer" v-if="cardAnswered">
                 <div class="answerContainer" v-if="!Array.isArray(stack[currentCard].a)">
-                    <span v-if="!stack[currentCard].a.equation">{{ stack[currentCard].a.content }}</span>
-                    <math-field class="math" read-only v-if="stack[currentCard].a.equation">{{ stack[currentCard].a.content }}</math-field>
+                    <span v-if="stack[currentCard].a.type === 'text'">{{ stack[currentCard].a.content }}</span>
+                    <math-field class="math" read-only v-if="stack[currentCard].a.type === 'equation'">{{ stack[currentCard].a.content }}</math-field>
                     <span>single</span>
                 </div>
                 <div class="answerArrayContainer" v-for="element in stack[currentCard].a.length" v-if="Array.isArray(stack[currentCard].a)">
-                    <span v-if="!stack[currentCard].a[element - 1].equation">{{ stack[currentCard].a[element - 1].content }}</span>
-                    <math-field class="math" read-only v-if="stack[currentCard].a[element - 1].equation">{{ stack[currentCard].a[element - 1].content }}</math-field>
+                    <span v-if="stack[currentCard].a[element - 1].type === 'text'">{{ stack[currentCard].a[element - 1].content }}</span>
+                    <math-field class="math" read-only v-if="stack[currentCard].a[element - 1].type === 'equation'">{{ stack[currentCard].a[element - 1].content }}</math-field>
                 </div>                
             </div>          
         </div>
@@ -287,6 +285,7 @@
             </div>
             <div id="progressBarFill" :style="{'width': ((currentCard + 1) / stack.length) * 100 + '%'}"></div>
         </div>
+        <a id="privacy" href="https://sunaarisu.de/privacy">Privacy</a>
     </main>    
 </template>
 
@@ -453,5 +452,13 @@
         border: none;
         font-size: larger;
         font-weight: bolder;
+    }
+
+    #privacy {
+        position: fixed;
+        left: 10px;
+        bottom: 10px;
+        text-decoration: none;
+        color: var(--color-text-light);
     }
 </style>

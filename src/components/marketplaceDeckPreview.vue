@@ -1,10 +1,11 @@
 <script setup>
     import { ref } from 'vue';
-    import { useRouter } from 'vue-router';
+    import { useRouter, useRoute } from 'vue-router';
     import { useUserStore } from '../store/user';
     import deckInfoView from '../components/deckInfo.vue';
 
     const router = useRouter();
+    const route = useRoute();
     const user = useUserStore();
 
     const props = defineProps({
@@ -55,6 +56,15 @@
                 infoTxt.value = 'Something went wrong. :( Try refreshing the page.';
             });
     }
+
+    function toggleRenderInfo(){
+        renderInfo.value = !renderInfo.value;
+        if (renderInfo.value) {
+            router.push({ path: '/marketplace', query: {s: (route.query.s === undefined ? undefined : route.query.s), d: props.deckInfo._id}});
+        } else {
+            router.push({ path: '/marketplace', query: {s: (route.query.s === undefined ? undefined : route.query.s)}});
+        }
+    }
 </script>
 
 <template>
@@ -64,14 +74,14 @@
             <span class="cardCount">Cards: {{ deckInfo.deckInfo.card_count }}</span>
         </div>
         <div class="btnContainer">
-            <button @click="renderInfo = true">Info</button>
+            <button @click="toggleRenderInfo()">Info</button>
             <button v-if="!added" @click="router.push({ path: '/deck/' + deckInfo._id})">Learn</button>
             <button v-if="added" @click="router.push({ path: '/home'})">Go to</button>
             <button v-if="!added" @click="addOrRmv(true)">Add</button>
             <button v-if="added" @click="addOrRmv(false)">Rmv</button>
         </div>
     </div>
-    <deckInfoView v-if="renderInfo" @response="renderInfo = false" :deckInfo="props.deckInfo"/>
+    <deckInfoView v-if="renderInfo" @response="toggleRenderInfo()" :id="props.deckInfo._id" :addedDecks="addedDecks"/>
 </template>
 
 <style scoped>
