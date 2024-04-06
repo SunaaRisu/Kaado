@@ -10,14 +10,14 @@
     const searchQuery = ref('');
 
     onMounted(() => {
-        draw();
+        draw();        
     })
 
     function getRndInteger(min, max) {
-    return Math.floor(Math.random() * (max - min + 1) ) + min;
+        return Math.floor(Math.random() * (max - min + 1) ) + min;
     }
     function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+        return new Promise(resolve => setTimeout(resolve, ms));
     }
 
     async function draw(){

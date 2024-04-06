@@ -48,6 +48,10 @@
                 console.log(user.$state.user.version)
                 renderPatchnotes.value = true;
             }
+
+            if (route.path === '/') {
+                router.push({ path: '/home' });
+            }
         })
         .catch(err => {
             console.log(err);
